@@ -13,7 +13,11 @@ License: CC0
 Encoding: UTF-8
 URL: https://ards.r-sassy.org
 BugReports: https://github.com/dbosak01/ards/issues
-Depends: R (>= 4.0)
+Depends: R (>= 4.1)
 Suggests: 
+    dplyr,
+    tidyr,
+    tibble,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+RoxygenNote: 7.2.1
