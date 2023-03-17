@@ -1,0 +1,19 @@
+Package: ards
+Type: Package
+Title: Creates Analysis Results Datasets
+Version: 0.1.0
+Author@R: c( 
+    person("David", "Bosak", email = "dbosak01@gmail.com", role = c("aut", "cre"))) 
+Maintainer: David Bosak <dbosak01@gmail.com>
+Description: Contiains functions to help create an Analysis Results Dataset (ARDS).
+    The dataset follows 'CDISC' recommended structure.  The dataset can be 
+    created in multiple passes, using different data frames as input.  Analysis
+    Results Datasets are commonly used in the pharmaceutical and biotech industries.
+License: CC0
+Encoding: UTF-8
+URL: https://ards.r-sassy.org
+BugReports: https://github.com/dbosak01/ards/issues
+Depends: R (>= 4.0)
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
