@@ -5,9 +5,9 @@ to the ARDS dataset.  The function is designed to be pipe-friendly, and will
 return the input dataset unaltered.  The parameters on the function
 define how to extract the desired data from the analysis dataset.
 The "statvars" parameter defines which columns contain desired
-analysis data.  The values in these columns will be used to populate the
+analysis results.  The values in these columns will be used to populate the
 "statval" variable in the output dataset.  Other parameters are used to
-define identifying information for the statistics value, and are optional.
+define identifying information for the statistics values, and are optional.
 The add_ards function should be called immediately after any
 calculations, while the analysis results are still in numeric form.  This 
 recommendation is to ensure that the ARDS will contain full precision of the
@@ -19,9 +19,9 @@ to the ARDS dataset.  The function is designed to be pipe-friendly, and will
 return the input dataset unaltered.  The parameters on the function
 define how to extract the desired data from the analysis dataset.
 The "statvars" parameter defines which columns contain desired
-analysis data.  The values in these columns will be used to populate the
+analysis results.  The values in these columns will be used to populate the
 "statval" variable in the output dataset.  Other parameters are used to
-define identifying information for the statistics value, and are optional.
+define identifying information for the statistics values, and are optional.
 The add_ards function should be called immediately after any
 calculations, while the analysis results are still in numeric form.  This 
 recommendation is to ensure that the ARDS will contain full precision of the
@@ -83,9 +83,9 @@ to the ARDS dataset.  The function is designed to be pipe-friendly, and will
 return the input dataset unaltered.  The parameters on the function
 define how to extract the desired data from the analysis dataset.
 The "statvars" parameter defines which columns contain desired
-analysis data.  The values in these columns will be used to populate the
+analysis results.  The values in these columns will be used to populate the
 "statval" variable in the output dataset.  Other parameters are used to
-define identifying information for the statistics value, and are optional.</p>
+define identifying information for the statistics values, and are optional.</p>
 <p>The <code>add_ards</code> function should be called immediately after any
 calculations, while the analysis results are still in numeric form.  This 
 recommendation is to ensure that the ARDS will contain full precision of the
@@ -111,7 +111,8 @@ the values captured in the ARDS.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>The input data to create analysis results for.</p></dd>
+<dd><p>The input data to create analysis results for.  This parameter
+is required.</p></dd>
 
 
 <dt>statvars</dt>
@@ -161,12 +162,13 @@ exists so that you may pass in the values from a different variable, if desired.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other ards: 
+<code><a href="get_ards.html">get_ards</a>()</code>,
 <code><a href="init_ards.html">init_ards</a>()</code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ards</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ards.r-sassy.org">ards</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize the ARDS</span></span>

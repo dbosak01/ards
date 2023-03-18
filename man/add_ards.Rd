@@ -16,7 +16,8 @@ add_ards(
 )
 }
 \arguments{
-\item{data}{The input data to create analysis results for.}
+\item{data}{The input data to create analysis results for.  This parameter
+is required.}
 
 \item{statvars}{A vector of column names that identify the desired results.
 Statvar columns must be numeric.  This parameter is required.}
@@ -52,9 +53,9 @@ to the ARDS dataset.  The function is designed to be pipe-friendly, and will
 return the input dataset unaltered.  The parameters on the function
 define how to extract the desired data from the analysis dataset.
 The "statvars" parameter defines which columns contain desired
-analysis data.  The values in these columns will be used to populate the
+analysis results.  The values in these columns will be used to populate the
 "statval" variable in the output dataset.  Other parameters are used to
-define identifying information for the statistics value, and are optional.
+define identifying information for the statistics values, and are optional.
 
 The \code{add_ards} function should be called immediately after any
 calculations, while the analysis results are still in numeric form.  This 
@@ -106,6 +107,7 @@ ards <- get_ards()
 }
 \seealso{
 Other ards: 
+\code{\link{get_ards}()},
 \code{\link{init_ards}()}
 }
 \concept{ards}

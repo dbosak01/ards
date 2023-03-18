@@ -123,7 +123,7 @@ perform a very simple analysis on the <strong>mtcars</strong> sample
 data frame. Examine the following example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ards</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ards.r-sassy.org">ards</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize the ARDS</span></span>
 <span><span class="co"># - These values will be repeated on all rows in the ARDS dataset</span></span>
@@ -176,8 +176,8 @@ Listing, and Figure (TLF) program, or a data preparation program. In
 many cases, the program does not need to be restructured to accommodate
 the <strong>ards</strong> functions.</p>
 <p>Let us look at a more realistic program. In this demonstration, we
-will create the analysis for a Demographics table.<br>
-Note the following about this program:</p>
+will create the analysis for a Demographics table. Note the following
+about this program:</p>
 <ul>
 <li>The input data is a subset of 10 subjects and some relevant
 variables to make the program easier to read and understand.</li>
@@ -203,7 +203,7 @@ to another program for additional processing.</li>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ards</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ards.r-sassy.org">ards</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create input data</span></span>
 <span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>

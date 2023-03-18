@@ -112,7 +112,7 @@ program.  In many cases, the program does not need to be restructured to accommo
 the **ards** functions.  
 
 Let us look at a more realistic program.
-In this demonstration, we will create the analysis for a Demographics table.  
+In this demonstration, we will create the analysis for a Demographics table. 
 Note the following about this program:
 
 * The input data is a subset of 10 subjects and some relevant variables to make

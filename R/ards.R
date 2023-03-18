@@ -171,9 +171,9 @@ init_ards <- function(studyid = NA,
 #' return the input dataset unaltered.  The parameters on the function
 #' define how to extract the desired data from the analysis dataset.
 #' The "statvars" parameter defines which columns contain desired
-#' analysis data.  The values in these columns will be used to populate the
+#' analysis results.  The values in these columns will be used to populate the
 #' "statval" variable in the output dataset.  Other parameters are used to
-#' define identifying information for the statistics value, and are optional.
+#' define identifying information for the statistics values, and are optional.
 #' 
 #' The \code{add_ards} function should be called immediately after any
 #' calculations, while the analysis results are still in numeric form.  This 
@@ -181,7 +181,8 @@ init_ards <- function(studyid = NA,
 #' analysis values.  Once the analysis values are dumped into the ARDS, you
 #' may proceed to transform and format your analysis data, without affecting
 #' the values captured in the ARDS. 
-#' @param data The input data to create analysis results for.
+#' @param data The input data to create analysis results for.  This parameter
+#' is required.
 #' @param statvars  A vector of column names that identify the desired results.
 #' Statvar columns must be numeric.  This parameter is required.
 #' @param statdesc A vector of values or a column name that identifies a description 
@@ -364,9 +365,11 @@ add_ards <- function(data, statvars, statdesc = NULL,
 
 #' @title Returns the current Analysis Results Dataset
 #' @description The \code{get_ards} function returns the current state
-#' of the analysis dataset.  This data frame may be saved to disk, saved in
+#' of the Analysis Results Dataset (ARDS) as an R data frame. 
+#' This data frame may be saved to disk, saved in
 #' a database, or examined from code.  The function takes no parameters.
 #' @return A data frame of the current analysis results.
+#' @family ards
 #' @examples 
 #' library(ards)
 #' library(dplyr)

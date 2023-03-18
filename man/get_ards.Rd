@@ -11,7 +11,8 @@ A data frame of the current analysis results.
 }
 \description{
 The \code{get_ards} function returns the current state
-of the analysis dataset.  This data frame may be saved to disk, saved in
+of the Analysis Results Dataset (ARDS) as an R data frame. 
+This data frame may be saved to disk, saved in
 a database, or examined from code.  The function takes no parameters.
 }
 \examples{
@@ -59,3 +60,9 @@ ards <- get_ards()
 # Uncomment to view ards
 # View(ards)
 }
+\seealso{
+Other ards: 
+\code{\link{add_ards}()},
+\code{\link{init_ards}()}
+}
+\concept{ards}
