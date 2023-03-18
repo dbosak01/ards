@@ -1,4 +1,32 @@
 
+# Introductory Documentation ----------------------------------------------
+
+#' @title ards: A package for creating Analysis Results Datasets
+#'
+#' @description An Analysis Results Dataset (ARDS) is commonly used in the pharma-biotech industry
+#' to capture the results of an analysis in a tabular data structure.  The \strong{ards}
+#' package helps create the ARDS. \strong{ards} functions can be called from inside 
+#' a report program or a data preparation program.  The functions use a 
+#' "bucketing" approach, whereby data can be added to the ARDS in multiple 
+#' calls and from multiple intermediate data sets.    
+#'     
+#' @details 
+#' The \strong{ards} package allows you to easily create an ARDS dataset
+#' in a standard clinical reporting or data preparation program.  The 
+#' \strong{ards} package contains only three functions, and each will
+#' be used to create the ARDS dataset.  The functions will be called in the 
+#' following order, and for the described purpose:
+#' \itemize{
+#'   \item \code{\link{init_ards}}: Initialize an ARDS dataset
+#'   \item \code{\link{add_ards}}: Add data to an ARDS dataset
+#'   \item \code{\link{get_ards}}: Extract the completed ARDS
+#' }
+#' Click on the links above for more information about each function.
+#' 
+#' @docType package
+#' @keywords internal
+#' @name ards
+NULL
 
 # Globals -----------------------------------------------------------------
 
@@ -35,9 +63,9 @@ ardsenv$template <- NULL
 #' value is TRUE.
 #' @return The initialized analysis dataset.
 #' @export
-init_ards <- function(studyid = NULL,
-                      tableid = NULL, adsns = NULL,
-                      population = NULL, time = NULL, where = NULL, reset = TRUE) {
+init_ards <- function(studyid = NA,
+                      tableid = NA, adsns = NA,
+                      population = NA, time = NA, where = NA, reset = TRUE) {
 
 
   if (reset) {
@@ -45,11 +73,15 @@ init_ards <- function(studyid = NULL,
       ardsenv$ards <- NULL
     }
   }
+  
+  # Collapse analysis data
+  if (all(is.na(adsns) == FALSE))
+    adsns <- paste(adsns, sep ="", collapse = "|")
 
   # Create template record
   ardsenv$template <- data.frame(studyid = studyid, resultid = 0,
                                  tableid = tableid,
-                                 adsns = paste(adsns, sep ="", collapse = "|"),
+                                 adsns = adsns,
                                  population = population, time = time,
                                  where = where, byvar1 = NA, byvar2 = NA,
                                  byvar3 = NA, byvar4 = NA, byvar5 = NA,
@@ -99,6 +131,11 @@ add_ards <- function(data, statvars, statdesc = NULL,
                      anal_var = NULL, anal_val = NULL) {
 
   #browser()
+  
+  if (is.null(ardsenv$ards)) {
+    
+    stop("ARDS dataset is not initialized.") 
+  }
 
   nms <- names(data)
 

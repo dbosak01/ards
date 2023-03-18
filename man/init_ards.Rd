@@ -5,12 +5,12 @@
 \title{Initialize the Analysis Results Dataset}
 \usage{
 init_ards(
-  studyid = NULL,
-  tableid = NULL,
-  adsns = NULL,
-  population = NULL,
-  time = NULL,
-  where = NULL,
+  studyid = NA,
+  tableid = NA,
+  adsns = NA,
+  population = NA,
+  time = NA,
+  where = NA,
   reset = TRUE
 )
 }

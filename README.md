@@ -5,8 +5,7 @@
 [![ards downloads](https://cranlogs.r-pkg.org/badges/ards)](https://cran.r-project.org/package=ards)
 [![ards total downloads](https://cranlogs.r-pkg.org/badges/grand-total/ards)](https://cran.r-project.org/package=ards)
 [![R-CMD-check](https://github.com/dbosak01/ards/workflows/R-CMD-check/badge.svg)](https://github.com/dbosak01/ards/actions)
-[![Codecov test coverage](https://codecov.io/gh/dbosak01/reporter/branch/master/graph/badge.svg)](https://app.codecov.io/gh/dbosak01/ards?branch=master)
-[![R-CMD-check](https://github.com/dbosak01/ards/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dbosak01/ards/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/dbosak01/ards/branch/master/graph/badge.svg)](https://app.codecov.io/gh/dbosak01/ards?branch=master)
 <!-- badges: end -->
 
 # Introduction to **ards**
@@ -58,4 +57,4 @@ If you encounter a bug or have a feature request, please submit an issue
 
 The **sassy** meta-package includes several packages that help make R
 easier for everyone.  You can read more about the **sassy** package
-[here](https://sassy.r-sassy.org/).
+[here](https://r-sassy.org/).

@@ -53,12 +53,12 @@ test_that("ards2: add_ards() works as expected on one column.", {
   df1 <- data.frame("ACNT" = c(1, 2, 3))
 
 
-  ards1 <- add_ards(df1, statvars = v(ACNT), byvars = "label",
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = "label",
                     anal_var = "cyl")
 
   df2 <- data.frame("ACNT" = c(4, 5, 6))
 
-  ards2 <- add_ards(df2, statvars = v(ACNT), byvars = "label",
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = "label",
                     anal_var = "cyl")
 
   res <- get_ards()
@@ -93,7 +93,7 @@ test_that("ards3: add_ards() works as expected on multiple columns.", {
 
 
 
-  add_ards(df, statvars = v(ACNT, ADENOM, APCT, BCNT, BDENOM, BPCT), statdesc = "label",
+  add_ards(df, statvars = c("ACNT", "ADENOM", "APCT", "BCNT", "BDENOM", "BPCT"), statdesc = "label",
            anal_var = "cyl", anal_val = "val")
 
 
@@ -128,7 +128,7 @@ test_that("ards4: add_ards() works as expected on multiple columns with treatmen
             time = "SCREENING", where = "saffl = TRUE")
 
 
-  add_ards(df, statvars = v(CNT, DENOM, PCT), statdesc = "label",
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), statdesc = "label",
            anal_var = "cyl", anal_val = "val", trtvar = "TRT")
 
   res <- get_ards()
@@ -166,7 +166,7 @@ test_that("ards5: add_ards() works as expected in dplyr pipeline.", {
     summarize(cnt = n()) |>
     mutate(analvar = "cyl", label = paste(cyl, "Cylinder"),  pct = denom / cnt) |>
     ungroup() |>
-    add_ards(statvars = v(cnt, denom, pct), statdesc = "label",
+    add_ards(statvars = c('cnt', 'denom', 'pct'), statdesc = "label",
              anal_var = "cyl", trtvar = "trt") |>
     pivot_wider(names_from = trt,
                 values_from = c(cnt, pct)) |>
@@ -217,7 +217,7 @@ test_that("ards6: add_ards() works as expected for continuous variable in pipeli
               max = max(mpg)) |>
     mutate(analvar = "mpg") |>
     ungroup() |>
-    add_ards(statvars = v(n, mean, std, median, min, max),
+    add_ards(statvars = c("n", "mean", "std", "median", "min", "max"),
              statdesc = c("N", "Mean", "Std", "Median", "Min", "Max"),
              anal_var = "mpg", trtvar = "trt") |>
     pivot_longer(c(n, mean, std, median, min, max),
@@ -272,7 +272,7 @@ test_that("ards7: add_ards() works as expected for multiple analysis variables."
               max = max(mpg)) |>
     mutate(analvar = "mpg") |>
     ungroup() |>
-    add_ards(statvars = v(n, mean, std, median, min, max),
+    add_ards(statvars = c("n", "mean", "std", "median", "min", "max"),
              statdesc = c("N", "Mean", "Std", "Median", "Min", "Max"),
              anal_var = "mpg", trtvar = "trt") |>
     transmute(analvar, trt,
@@ -302,7 +302,7 @@ test_that("ards7: add_ards() works as expected for multiple analysis variables."
     summarize(cnt = n()) |>
     mutate(analvar = "cyl", label = paste(cyl, "Cylinder"),  pct = denom / cnt) |>
     ungroup() |>
-    add_ards(statvars = v(cnt, denom, pct), statdesc = "label",
+    add_ards(statvars = c("cnt", "denom", "pct"), statdesc = "label",
              anal_var = "cyl", trtvar = "trt") |>
     pivot_wider(names_from = trt,
                 values_from = c(cnt, pct)) |>
