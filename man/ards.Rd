@@ -24,5 +24,9 @@ following order, and for the described purpose:
   \item \code{\link{get_ards}}: Extract the completed ARDS
 }
 Click on the links above for more information about each function.
+
+The following figure describes the structure of the ARDS dataset.  This
+structure is recommended by CDISC.
+\figure{structure.png}
 }
 \keyword{internal}

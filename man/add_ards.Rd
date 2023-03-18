@@ -16,35 +16,96 @@ add_ards(
 )
 }
 \arguments{
-\item{data}{The input dataset to create analysis results for.}
+\item{data}{The input data to create analysis results for.}
 
 \item{statvars}{A vector of column names that identify the desired results.
 Statvar columns must be numeric.  This parameter is required.}
 
-\item{statdesc}{A vector of column names that identify a description value
-for each statvar.}
+\item{statdesc}{A vector of values or a column name that identifies a description 
+for each statvar. If passed as a vector of values, the number of values
+should correspond to the number of 'statvar' variables.}
 
 \item{byvars}{A vector of column names to use for by variables.}
 
 \item{trtvar}{A column name to use for the treatment variable.}
 
-\item{paramcd}{A description of the analysis parameter.}
+\item{paramcd}{A character string that describes the analysis parameter 
+code or column name that contains the parameter code. If supplied as a
+column name, the function will populate the 'paramcd' column in the ARDS
+with the value of the 'paramcd' column.}
 
-\item{anal_var}{A column name for the analysis variable.}
+\item{anal_var}{A column name for the analysis variable or a string
+that identifies the analysis variable.}
 
 \item{anal_val}{The analysis variable value.  Can be identified by a column
-name or a vector of values.}
+name or a vector of values. By default, the analysis values will be taken
+from the values of the variable passed in 'anal_var'.  This parameter 
+exists so that you may pass in the values from a different variable, if desired.}
 }
 \value{
 The input data frame, unaltered.
 }
 \description{
-The \code{add_ards} function dumps data from an input dataset
+The \code{add_ards} function dumps data from an input analysis 
+dataset
 to the ARDS dataset.  The function is designed to be pipe-friendly, and will
 return the input dataset unaltered.  The parameters on the function
-define how to extract the desired data from the input dataset.
-The "statvars" parameter defines which column names contain desired
+define how to extract the desired data from the analysis dataset.
+The "statvars" parameter defines which columns contain desired
 analysis data.  The values in these columns will be used to populate the
 "statval" variable in the output dataset.  Other parameters are used to
 define identifying information for the statistics value, and are optional.
+
+The \code{add_ards} function should be called immediately after any
+calculations, while the analysis results are still in numeric form.  This 
+recommendation is to ensure that the ARDS will contain full precision of the
+analysis values.  Once the analysis values are dumped into the ARDS, you
+may proceed to transform and format your analysis data, without affecting
+the values captured in the ARDS.
 }
+\examples{
+library(ards)
+library(dplyr)
+
+# Initialize the ARDS
+init_ards(studyid = "MTCARS",
+          tableid = "01", adsns = "mtcars",
+          population = "all cars",
+          time = "1973")
+
+# Perform analysis on MPG
+# - Add to ARDS from within continuous variable pipeline
+mpgdf <- mtcars |> 
+  select(cyl, mpg) |> 
+  group_by(cyl) |> 
+  summarize(n = n(),
+            mean = mean(mpg),
+            std = sd(mpg),
+            min = min(mpg),
+            max = max(mpg)) |> 
+  add_ards(statvars = c("n", "mean", "std", "min", "max"),
+         anal_var = "mpg", trtvar = "cyl")
+            
+# Perform analysis on GEAR
+# - Add to ARDS from within categorical variable pipeline
+geardf <- mtcars |> 
+  mutate(denom = n()) |> 
+  select(cyl, gear, denom) |> 
+  group_by(cyl, gear) |> 
+  summarize(cnt = n(), 
+            denom = max(denom)) |>
+  mutate(pct = cnt / denom * 100) |> 
+  add_ards(statvars = c("cnt", "pct", "denom"),
+         anal_var = "gear", trtvar = "cyl")
+
+# Get the ARDS
+ards <- get_ards() 
+
+# Uncomment to view ards
+# View(ards)
+}
+\seealso{
+Other ards: 
+\code{\link{init_ards}()}
+}
+\concept{ards}

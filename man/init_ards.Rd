@@ -15,22 +15,35 @@ init_ards(
 )
 }
 \arguments{
-\item{studyid}{The study for which the analysis was performed. Optional string value.}
+\item{studyid}{The study for which the analysis was performed. 
+This parameter is optional.}
 
-\item{tableid}{A table identifier to use for the results. Optional string
+\item{tableid}{A table identifier to use for the results. This value 
+identifies the table within the study.  Optional string
 value.}
 
-\item{adsns}{A vector of source dataset names.}
+\item{adsns}{A vector of source dataset names.  This parameter is used to 
+identify the input data for the analysis.  This parameter is optional.}
 
-\item{population}{A description of the analysis population.}
+\item{population}{A description of the analysis population.  This parameter
+is used to identify the population for analysis.  This parameter is optional.}
 
-\item{time}{A description of the time frame used in the analysis.}
+\item{time}{A description of the time frame used in the analysis.  For example, 
+in a clinical study, the "time" value may identify the visit on which the
+analysis is based.}
 
-\item{where}{A description of the criteria used to subset the data for analysis.}
+\item{where}{An optional description of the criteria used to subset the 
+data for analysis.}
 
-\item{reset}{If true, clear out existing ARDS dataset and replace with
-empty template.  Otherwise, just assign parameters to template.  The default
-value is TRUE.}
+\item{reset}{If true, clears out the existing ARDS dataset and replaces with
+an empty template.  Otherwise, just assign new parameter values to the 
+existing template.  The default
+value is TRUE, meaning the ARDS in memory will be cleared every time 
+\code{init_ards}
+is called.  If you wish to assign new initialization values, but 
+keep appending to the existing ARDS dataset, set this parameter to FALSE.  
+This feature is used when you are creating two different tables in the 
+same program.}
 }
 \value{
 The initialized analysis dataset.
@@ -39,8 +52,56 @@ The initialized analysis dataset.
 A function to initialize the Analysis Results Dataset (ARDS).
 This function will
 first create a data template in the desired structure, and then
-populates common values across the dataset.  These common values will be
-repeated on each row of the analysis data frame for subsequent inserts.
-Use the "reset" parameter to clear out any existing data and start a new
-analysis dataset.
+populate common values across the dataset from that template.  
+These common values will be
+repeated on each row of the analysis data frame for subsequent inserts
+from the \code{\link{add_ards}} function.
 }
+\examples{
+library(ards)
+library(dplyr)
+
+# Initialize the ARDS
+# - These values will be common through the dataset
+init_ards(studyid = "MTCARS",
+          tableid = "01", adsns = "mtcars",
+          population = "all cars",
+          time = "1973")
+
+# Perform analysis on MPG
+# - Using cylinders as a by-group
+analdf <- mtcars |> 
+  select(cyl, mpg) |> 
+  group_by(cyl) |> 
+  summarize(n = n(),
+            mean = mean(mpg),
+            std = sd(mpg),
+            min = min(mpg),
+            max = max(mpg))
+
+# View analysis data
+analdf
+#     cyl     n  mean   std   min   max
+#   <dbl> <int> <dbl> <dbl> <dbl> <dbl>
+# 1     4    11  26.7  4.51  21.4  33.9
+# 2     6     7  19.7  1.45  17.8  21.4
+# 3     8    14  15.1  2.56  10.4  19.2
+
+# Add analysis data to ARDS
+# - These values will be unique per row
+add_ards(analdf, 
+         statvars = c("n", "mean", "std", "min", "max"),
+         anal_var = "mpg", trtvar = "cyl")
+
+
+# Get the ARDS
+ards <- get_ards() 
+
+# Uncomment to view ards
+# View(ards)
+}
+\seealso{
+Other ards: 
+\code{\link{add_ards}()}
+}
+\concept{ards}

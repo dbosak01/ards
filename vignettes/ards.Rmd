@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 The **ards** package creates Analysis Results Datasets (ARDS). 
-ARDS are commonly used to store the results of an analysis in a 
+ARDS are used to store the results of an analysis in a 
 tabular form, so they can be examined and manipulated by downstream processes.
 
 An ARDS dataset is created with the following steps:
@@ -59,11 +59,11 @@ library(dplyr)
 library(ards)
 
 # Initialize the ARDS
-# - These values will be common through the dataset
+# - These values will be repeated on all rows in the ARDS dataset
 init_ards(studyid = "MTCARS",
           tableid = "01", adsns = "mtcars",
           population = "all cars",
-          time = "1973", reset = TRUE)
+          time = "1973")
 
 # Perform analysis on MPG
 # - Using cylinders as a by group
@@ -85,14 +85,14 @@ analdf
 # 3     8    14  15.1  2.56  10.4  19.2
 
 # Add analysis data to ARDS
-# - These values will be unique per row
+# - These values will be unique for each row in the ARDS dataset
 add_ards(analdf, 
          statvars = c("n", "mean", "std", "min", "max"),
          anal_var = "mpg", trtvar = "cyl")
          
          
 # Get the ARDS
-# - Remove by-variables to make dataset easier to read
+# - Remove by-variables to make the ARDS dataset easier to read
 ards <- get_ards() |> select(-starts_with("by"))
 
 # Uncomment to view ards
@@ -103,18 +103,34 @@ Here is an image of the ARDS dataset created above:
 <img src="../man/images/ards2.png"/>
 
 
-## Realistic Example 
+## More Realistic Example 
 
-As can be seen above, the functions in the **ards** package are easy to use.  
+As can be seen above, the functions in the **ards** package are easy to use. 
 They can be integrated
 into a standard Table, Listing, and Figure (TLF) program, or a data preparation
 program.  In many cases, the program does not need to be restructured to accommodate
-the **ards** functions.  Note that the `add_ards()` function can be placed in the 
-middle of existing data pipelines, and will not interfere with your analysis.
+the **ards** functions.  
 
 Let us look at a more realistic program.
-In this demonstration, we will create a Demographics table.  The input data
-for this program is as follows:
+In this demonstration, we will create the analysis for a Demographics table.  
+Note the following about this program:
+
+* The input data is a subset of 10 subjects and some relevant variables to make
+the program easier to read and understand.
+* The `init_ards()` function is called once at the top of the program.  The values
+passed will be the same for all rows of the ARDS.
+* The `add_ards()` function identifies variables in the analysis dataset that
+you want to add to the ARDS.  The variable values will be extracted from the 
+analysis data and transformed into the ARDS structure.
+* The `add_ards()` function can be placed in the 
+middle of a data pipeline, and will not interfere with your analysis.
+* The `add_ards()` function is called immediately after the calculations, before 
+any formatting or transformations.  The function is called at this point so that
+the ARDS will contains the original numeric values with full precision. 
+* When the analysis is complete, the `get_ards()` is called to retrieve the 
+ARDS dataset.  The ARDS dataset is a standard R data frame that can be saved,
+combined with other analysis results, or passed to another program for additional
+processing.
 
 
 ```{r eval=FALSE, echo=TRUE}
@@ -142,7 +158,7 @@ init_ards(studyid = "ABC",
           population = "safety population",
           time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
 
-# Perform AGE analysis
+# Perform analysis on AGE variable
 agedf <- adsl |>
   select(AGE, ARM) |>
   group_by(ARM) |>
@@ -169,6 +185,7 @@ agedf <- adsl |>
   transmute(analvar, label = c("N", "Mean (Std)", "Median", "Min-Max"),
            trtA = `ARM A`, trtB = `ARM B`, trtC = `ARM C`, trtD = `ARM D`)
 
+# View analysis results
 agedf
 #   # A tibble: 4 × 6
 #   analvar label      trtA        trtB         trtC        trtD        
@@ -185,7 +202,7 @@ trt_pop
 # ARM A ARM B ARM C ARM D 
 #   2     2     2     3 
 
-# Perform SEX analysis
+# Perform analysis on SEX variable
 sexdf <- adsl |>
   mutate(denom = trt_pop[paste0(adsl$ARM)]) |>
   group_by(SEX, ARM, denom) |>
@@ -202,13 +219,14 @@ sexdf <- adsl |>
             trtC = sprintf("%1d (%3.0f%%)", `cnt_ARM C`, `pct_ARM C`),
             trtD = sprintf("%1d (%3.0f%%)", `cnt_ARM D`, `pct_ARM D`))
 
+# View analysis results
 sexdf
 #   analvar label trtA      trtB     trtC      trtD     
 #   <chr>   <chr> <chr>     <chr>    <chr>     <chr>    
 # 1 SEX     F     NA ( NA%) 1 ( 50%) 2 (100%)  NA ( NA%)
 # 2 SEX     M     2 (100%)  1 ( 50%) NA ( NA%) 3 (100%) 
 
-# Perform RACE analysis
+# Perform analysis on RACE
 racedf <- adsl |>
   mutate(denom = trt_pop[paste0(adsl$ARM)]) |>
   group_by(RACE, ARM, denom) |>
@@ -225,6 +243,7 @@ racedf <- adsl |>
             trtC = sprintf("%1d (%3.0f%%)", `cnt_ARM C`, `pct_ARM C`),
             trtD = sprintf("%1d (%3.0f%%)", `cnt_ARM D`, `pct_ARM D`))
 
+# View analysis results
 racedf
 #   analvar label                     trtA      trtB      trtC     trtD     
 #   <chr>   <chr>                     <chr>     <chr>     <chr>    <chr>    
@@ -234,6 +253,8 @@ racedf
 # Combine all analysis into final data frame
 final <- bind_rows(agedf, sexdf, racedf)
 
+# View final data frame
+# - This data frame would normally used for reporting
 final
 # # A tibble: 8 × 6
 #   analvar label                     trtA        trtB         trtC        trtD        
@@ -249,6 +270,7 @@ final
 
 
 # Extract ARDS
+# - Remove by-variables to improve readability
 ards <- get_ards() |> select(-starts_with("by"))
                              
 # Uncomment to view ARDS                             

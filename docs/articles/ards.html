@@ -78,8 +78,8 @@
     
     
 <p>The <strong>ards</strong> package creates Analysis Results Datasets
-(ARDS). ARDS are commonly used to store the results of an analysis in a
-tabular form, so they can be examined and manipulated by downstream
+(ARDS). ARDS are used to store the results of an analysis in a tabular
+form, so they can be examined and manipulated by downstream
 processes.</p>
 <p>An ARDS dataset is created with the following steps:</p>
 <ol style="list-style-type: decimal">
@@ -126,11 +126,11 @@ data frame. Examine the following example:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ards</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize the ARDS</span></span>
-<span><span class="co"># - These values will be common through the dataset</span></span>
+<span><span class="co"># - These values will be repeated on all rows in the ARDS dataset</span></span>
 <span><span class="fu"><a href="../reference/init_ards.html">init_ards</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="st">"MTCARS"</span>,</span>
 <span>          tableid <span class="op">=</span> <span class="st">"01"</span>, adsns <span class="op">=</span> <span class="st">"mtcars"</span>,</span>
 <span>          population <span class="op">=</span> <span class="st">"all cars"</span>,</span>
-<span>          time <span class="op">=</span> <span class="st">"1973"</span>, reset <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>          time <span class="op">=</span> <span class="st">"1973"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Perform analysis on MPG</span></span>
 <span><span class="co"># - Using cylinders as a by group</span></span>
@@ -152,14 +152,14 @@ data frame. Examine the following example:</p>
 <span><span class="co"># 3     8    14  15.1  2.56  10.4  19.2</span></span>
 <span></span>
 <span><span class="co"># Add analysis data to ARDS</span></span>
-<span><span class="co"># - These values will be unique per row</span></span>
+<span><span class="co"># - These values will be unique for each row in the ARDS dataset</span></span>
 <span><span class="fu"><a href="../reference/add_ards.html">add_ards</a></span><span class="op">(</span><span class="va">analdf</span>, </span>
 <span>         statvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"std"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
 <span>         anal_var <span class="op">=</span> <span class="st">"mpg"</span>, trtvar <span class="op">=</span> <span class="st">"cyl"</span><span class="op">)</span></span>
 <span>         </span>
 <span>         </span>
 <span><span class="co"># Get the ARDS</span></span>
-<span><span class="co"># - Remove by-variables to make dataset easier to read</span></span>
+<span><span class="co"># - Remove by-variables to make the ARDS dataset easier to read</span></span>
 <span><span class="va">ards</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ards.html">get_ards</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"by"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Uncomment to view ards</span></span>
@@ -168,19 +168,37 @@ data frame. Examine the following example:</p>
 <img src="../man/images/ards2.png"></p>
 </div>
 <div class="section level2">
-<h2 id="realistic-example">Realistic Example<a class="anchor" aria-label="anchor" href="#realistic-example"></a>
+<h2 id="more-realistic-example">More Realistic Example<a class="anchor" aria-label="anchor" href="#more-realistic-example"></a>
 </h2>
 <p>As can be seen above, the functions in the <strong>ards</strong>
-package are easy to use.<br>
-They can be integrated into a standard Table, Listing, and Figure (TLF)
-program, or a data preparation program. In many cases, the program does
-not need to be restructured to accommodate the <strong>ards</strong>
-functions. Note that the <code><a href="../reference/add_ards.html">add_ards()</a></code> function can be placed
-in the middle of existing data pipelines, and will not interfere with
-your analysis.</p>
+package are easy to use. They can be integrated into a standard Table,
+Listing, and Figure (TLF) program, or a data preparation program. In
+many cases, the program does not need to be restructured to accommodate
+the <strong>ards</strong> functions.</p>
 <p>Let us look at a more realistic program. In this demonstration, we
-will create a Demographics table. The input data for this program is as
-follows:</p>
+will create the analysis for a Demographics table.<br>
+Note the following about this program:</p>
+<ul>
+<li>The input data is a subset of 10 subjects and some relevant
+variables to make the program easier to read and understand.</li>
+<li>The <code><a href="../reference/init_ards.html">init_ards()</a></code> function is called once at the top of
+the program. The values passed will be the same for all rows of the
+ARDS.</li>
+<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function identifies variables in the
+analysis dataset that you want to add to the ARDS. The variable values
+will be extracted from the analysis data and transformed into the ARDS
+structure.</li>
+<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function can be placed in the middle of
+a data pipeline, and will not interfere with your analysis.</li>
+<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function is called immediately after the
+calculations, before any formatting or transformations. The function is
+called at this point so that the ARDS will contains the original numeric
+values with full precision.</li>
+<li>When the analysis is complete, the <code><a href="../reference/get_ards.html">get_ards()</a></code> is called
+to retrieve the ARDS dataset. The ARDS dataset is a standard R data
+frame that can be saved, combined with other analysis results, or passed
+to another program for additional processing.</li>
+</ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
@@ -206,7 +224,7 @@ follows:</p>
 <span>          population <span class="op">=</span> <span class="st">"safety population"</span>,</span>
 <span>          time <span class="op">=</span> <span class="st">"SCREENING"</span>, where <span class="op">=</span> <span class="st">"saffl = TRUE"</span>, reset <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Perform AGE analysis</span></span>
+<span><span class="co"># Perform analysis on AGE variable</span></span>
 <span><span class="va">agedf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">ARM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ARM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -233,6 +251,7 @@ follows:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">analvar</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"Mean (Std)"</span>, <span class="st">"Median"</span>, <span class="st">"Min-Max"</span><span class="op">)</span>,</span>
 <span>           trtA <span class="op">=</span> <span class="va">`ARM A`</span>, trtB <span class="op">=</span> <span class="va">`ARM B`</span>, trtC <span class="op">=</span> <span class="va">`ARM C`</span>, trtD <span class="op">=</span> <span class="va">`ARM D`</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># View analysis results</span></span>
 <span><span class="va">agedf</span></span>
 <span><span class="co">#   # A tibble: 4 × 6</span></span>
 <span><span class="co">#   analvar label      trtA        trtB         trtC        trtD        </span></span>
@@ -249,7 +268,7 @@ follows:</p>
 <span><span class="co"># ARM A ARM B ARM C ARM D </span></span>
 <span><span class="co">#   2     2     2     3 </span></span>
 <span></span>
-<span><span class="co"># Perform SEX analysis</span></span>
+<span><span class="co"># Perform analysis on SEX variable</span></span>
 <span><span class="va">sexdf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="va">trt_pop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">ARM</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">SEX</span>, <span class="va">ARM</span>, <span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -266,13 +285,14 @@ follows:</p>
 <span>            trtC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM C`</span>, <span class="va">`pct_ARM C`</span><span class="op">)</span>,</span>
 <span>            trtD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM D`</span>, <span class="va">`pct_ARM D`</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># View analysis results</span></span>
 <span><span class="va">sexdf</span></span>
 <span><span class="co">#   analvar label trtA      trtB     trtC      trtD     </span></span>
 <span><span class="co">#   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;    </span></span>
 <span><span class="co"># 1 SEX     F     NA ( NA%) 1 ( 50%) 2 (100%)  NA ( NA%)</span></span>
 <span><span class="co"># 2 SEX     M     2 (100%)  1 ( 50%) NA ( NA%) 3 (100%) </span></span>
 <span></span>
-<span><span class="co"># Perform RACE analysis</span></span>
+<span><span class="co"># Perform analysis on RACE</span></span>
 <span><span class="va">racedf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="va">trt_pop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">ARM</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">RACE</span>, <span class="va">ARM</span>, <span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -289,6 +309,7 @@ follows:</p>
 <span>            trtC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM C`</span>, <span class="va">`pct_ARM C`</span><span class="op">)</span>,</span>
 <span>            trtD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM D`</span>, <span class="va">`pct_ARM D`</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># View analysis results</span></span>
 <span><span class="va">racedf</span></span>
 <span><span class="co">#   analvar label                     trtA      trtB      trtC     trtD     </span></span>
 <span><span class="co">#   &lt;chr&gt;   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    </span></span>
@@ -298,6 +319,8 @@ follows:</p>
 <span><span class="co"># Combine all analysis into final data frame</span></span>
 <span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">agedf</span>, <span class="va">sexdf</span>, <span class="va">racedf</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># View final data frame</span></span>
+<span><span class="co"># - This data frame would normally used for reporting</span></span>
 <span><span class="va">final</span></span>
 <span><span class="co"># # A tibble: 8 × 6</span></span>
 <span><span class="co">#   analvar label                     trtA        trtB         trtC        trtD        </span></span>
@@ -313,6 +336,7 @@ follows:</p>
 <span></span>
 <span></span>
 <span><span class="co"># Extract ARDS</span></span>
+<span><span class="co"># - Remove by-variables to improve readability</span></span>
 <span><span class="va">ards</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ards.html">get_ards</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"by"</span><span class="op">)</span><span class="op">)</span></span>
 <span>                             </span>
 <span><span class="co"># Uncomment to view ARDS                             </span></span>

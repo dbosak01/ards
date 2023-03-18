@@ -335,3 +335,35 @@ test_that("ards7: add_ards() works as expected for multiple analysis variables."
 
 })
 
+
+
+
+test_that("ards8: init_ards() works as expected when no parameters are passed.", {
+  
+  
+  df <- read.table(header = TRUE, text = '
+    var    val label         CNT DENOM   PCT                TRT
+    "cyl"  8   "8 Cylinder" 10   19     0.5263157894736842 A
+    "cyl"  6   "6 Cylinder" 4    19     0.2105263157894737 A
+    "cyl"  4   "4 Cylinder" 5    19     0.2631578947368421 A
+    "cyl"  8   "8 Cylinder" 4    13     0.3076923076923077 B
+    "cyl"  6   "6 Cylinder" 3    13     0.2307692307692308 B
+    "cyl"  4   "4 Cylinder" 6    13     0.4615384615384615 B')
+  
+  
+  init_ards()
+  
+  
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), statdesc = "label",
+           anal_var = "cyl", anal_val = "val", trtvar = "TRT")
+  
+  res <- get_ards()
+  
+  res
+  
+  expect_equal(is.null(res), FALSE)
+  expect_equal(nrow(res), 18)
+  expect_equal(ncol(res), 33)
+  
+})
+

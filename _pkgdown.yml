@@ -2,3 +2,10 @@ url:  https://ards.r-sassy.org
 template:
   bootstrap: 5
 
+reference:
+- title: ARDS Functions
+  desc: Functions to create an Analysis Results Dataset (ARDS)
+  contents:
+  - init_ards
+  - add_ards
+  - get_ards
