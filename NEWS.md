@@ -1,4 +1,4 @@
-# ards 0.1.0
+# ards 0.1.1
 
 * Initial version.
 * Add `init_ards()`, `add_ards()`, and `get_ards()` functions.

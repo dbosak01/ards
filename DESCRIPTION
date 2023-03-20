@@ -1,15 +1,15 @@
 Package: ards
 Type: Package
 Title: Creates Analysis Results Datasets
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c( 
     person("David", "Bosak", email = "dbosak01@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Kramer", email = "kkrame02@amgen.com", role = "ctb"),
     person("Jack", "Fuller", email = "jacfulle@amgen.com", role = c("ctb")),
     person("Matt", "Baldwin", email = "mbaldw01@amgen.com", role = c("ctb"))) 
 Maintainer: David Bosak <dbosak01@gmail.com>
-Description: Contains functions to help create an Analysis Results Dataset (ARDS).
-    The dataset follows 'CDISC' recommended structure.  The dataset can be 
+Description: Contains functions to help create an Analysis Results Dataset.
+    The dataset follows industry recommended structure.  The dataset can be 
     created in multiple passes, using different data frames as input.  Analysis
     Results Datasets are used in the pharmaceutical and biotech industries
     to capture analysis in a common tabular data structure.
