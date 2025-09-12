@@ -27,10 +27,10 @@
 #' structure is recommended by CDISC.
 #' \figure{structure.png}
 #' 
-#' @docType package
+#' @aliases ards-package
 #' @keywords internal
 #' @name ards
-NULL
+"_PACKAGE"
 
 # Globals -----------------------------------------------------------------
 
@@ -64,7 +64,7 @@ ardsenv$template <- NULL
 #' identify the input data for the analysis.  This parameter is optional.
 #' @param population A description of the analysis population.  This parameter
 #' is used to identify the population for analysis.  This parameter is optional.
-#' @param time A description of the time frame used in the analysis.  For example, 
+#' @param time A optional description of the time frame used in the analysis.  For example, 
 #' in a clinical study, the "time" value may identify the visit on which the
 #' analysis is based.
 #' @param where An optional description of the criteria used to subset the 

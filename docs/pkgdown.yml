@@ -1,10 +1,9 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.4'
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   ards: ards.html
-last_built: 2023-09-09T20:05Z
+last_built: 2025-09-12T21:32Z
 urls:
   reference: https://ards.r-sassy.org/reference
   article: https://ards.r-sassy.org/articles
-

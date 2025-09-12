@@ -1,3 +1,7 @@
+# ards 0.1.2
+
+* Bug fix for by variable.
+
 # ards 0.1.1
 
 * Initial version.

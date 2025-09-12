@@ -28,7 +28,7 @@ identify the input data for the analysis.  This parameter is optional.}
 \item{population}{A description of the analysis population.  This parameter
 is used to identify the population for analysis.  This parameter is optional.}
 
-\item{time}{A description of the time frame used in the analysis.  For example, 
+\item{time}{A optional description of the time frame used in the analysis.  For example, 
 in a clinical study, the "time" value may identify the visit on which the
 analysis is based.}
 

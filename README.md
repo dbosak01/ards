@@ -1,7 +1,7 @@
 <!-- badges: start -->
 
 [![ards version](https://www.r-pkg.org/badges/version/ards)](https://cran.r-project.org/package=ards)
-[![ards lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://cran.r-project.org/package=ards)
+[![ards lifecycle](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://cran.r-project.org/package=ards)
 [![ards downloads](https://cranlogs.r-pkg.org/badges/ards)](https://cran.r-project.org/package=ards)
 [![ards total downloads](https://cranlogs.r-pkg.org/badges/grand-total/ards)](https://cran.r-project.org/package=ards)
 [![R-CMD-check](https://github.com/dbosak01/ards/workflows/R-CMD-check/badge.svg)](https://github.com/dbosak01/ards/actions)

@@ -367,3 +367,40 @@ test_that("ards8: init_ards() works as expected when no parameters are passed.",
   
 })
 
+test_that("ards2: add_ards() works as expected on one column with multiple byvars.", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, 3))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = c("label", "group"),
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = c("label", "group"),
+                    anal_var = "cyl")
+  
+  res <- get_ards()
+  
+  
+  res
+  
+  expect_equal(is.null(res), FALSE)
+  expect_equal(nrow(res), 6)
+  expect_equal(ncol(res), 33)
+  expect_equal(res[[1, 1]], 'abc')
+  expect_equal(res[ , "statval"], c(1, 2, 3, 4, 5, 6))
+  expect_equal(res$byvar1[1], "label")
+  expect_equal(res$byvar2[1], "group")
+  
+  
+})
+
+

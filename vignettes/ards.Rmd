@@ -38,7 +38,7 @@ you may save it to disk, or insert it into a database, as desired.
 
 ## ARDS Structure
 
-The data structure produced by the **ards** package is structure
+The data structure produced by the **ards** package is a structure
 recommended by [CDISC](https://www.cdisc.org/). This structure puts all analysis 
 values into a single column. 
 Therefore, there is one row per analysis value.  Descriptive information, such as the 

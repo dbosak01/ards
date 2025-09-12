@@ -3,6 +3,7 @@
 \docType{package}
 \name{ards}
 \alias{ards}
+\alias{ards-package}
 \title{ards: A package for creating Analysis Results Datasets}
 \description{
 An Analysis Results Dataset (ARDS) is commonly used in the pharma-biotech industry
@@ -28,5 +29,24 @@ Click on the links above for more information about each function.
 The following figure describes the structure of the ARDS dataset.  This
 structure is recommended by CDISC.
 \figure{structure.png}
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://ards.r-sassy.org}
+  \item Report bugs at \url{https://github.com/dbosak01/ards/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: David Bosak \email{dbosak01@gmail.com}
+
+Other contributors:
+\itemize{
+  \item Kevin Kramer \email{kkrame02@amgen.com} [contributor]
+  \item Jack Fuller \email{jacfulle@amgen.com} [contributor]
+  \item Matt Baldwin \email{mbaldw01@amgen.com} [contributor]
+}
+
 }
 \keyword{internal}
