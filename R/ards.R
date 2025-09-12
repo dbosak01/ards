@@ -297,7 +297,7 @@ add_ards <- function(data, statvars, statdesc = NULL,
 
     # Populate By variables and values
     if (!is.null(byvars)) {
-      for (j in seq_along(length(byvars))) {
+      for (j in seq_len(length(byvars))) {
         ret[[paste0("byvar", j)]] <- byvars[[j]]
 
         if (!is.null(data[[byvars[[j]]]]))
