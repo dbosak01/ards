@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   ards: ards.html
-last_built: 2025-09-12T21:32Z
+last_built: 2025-09-12T21:45Z
 urls:
   reference: https://ards.r-sassy.org/reference
   article: https://ards.r-sassy.org/articles
