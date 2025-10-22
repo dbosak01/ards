@@ -1,3 +1,7 @@
+# ards 0.1.3
+
+* Added `restore_ards()` function to convert back to wide format.
+
 # ards 0.1.2
 
 * Bug fix for byvars parameter in `add_ards()`.

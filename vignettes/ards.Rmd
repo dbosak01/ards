@@ -36,6 +36,10 @@ the end of the program.
 The above steps result in an ARDS data frame.  Once this data frame is extracted,
 you may save it to disk, or insert it into a database, as desired.
 
+If desired, you may also convert the ARDS data structure back into a wide
+form analysis structure for reporting.  See the `restore_ards()` function 
+description below.
+
 ## ARDS Structure
 
 The data structure produced by the **ards** package is a structure
@@ -279,3 +283,62 @@ ards <- get_ards() |> select(-starts_with("by"))
 ```
 Below is the ARDS dataset created by the above code sample:
 <img src="../man/images/ards1.png"/>
+
+## Restoring an ARDS Dataset
+
+The ARDS dataset structure is useful for storage and sharing of analysis
+results.  It is, however, not so useful for reporting.  Having all the 
+statistics in a single column actually makes reporting quite difficult.
+To perform reporting, it is necessary to put the statistics back into 
+separate columns.  This "widening" of the ARDS dataset can be performed with 
+the `restore_ards()` function.
+
+The `restore_ards()` function accepts an ARDS dataset and will return a list
+of transposed data frames.  The list will contain one data frame for each
+analysis variable.  The columns for each data frame may be different depending
+on which statistics were requested.
+
+Let's pick up from the last example, and just restore the result from 
+`get_ards()`:
+```{r eval=FALSE, echo=TRUE}
+# Reduce columns for readability
+ards_reduced <- ards[ , c("trtvar", "trtval", "anal_var", "anal_val", 
+                          "statname", "statval", "statdesc")]
+
+# Restore ARDS 
+res <- restore_ards(ards_reduced)
+
+# View restored data
+res
+# $AGE
+#   studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var anal_val n     mean       std median min max
+# 1     ABC        1      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA      AGE     <NA> 2 32.50000  2.121320   32.5  31  34
+# 2     ABC        2      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      AGE     <NA> 2 36.50000 14.849242   36.5  26  47
+# 3     ABC        3      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA      AGE     <NA> 2 46.00000  1.414214   46.0  45  47
+# 4     ABC        4      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA      AGE     <NA> 3 52.33333 18.929694   44.0  39  74
+# 
+# $SEX
+#    studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var anal_val cnt pct
+# 25     ABC       25      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      SEX        F   1  50
+# 26     ABC       26      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA      SEX        F   2 100
+# 27     ABC       27      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA      SEX        M   2 100
+# 28     ABC       28      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      SEX        M   1  50
+# 29     ABC       29      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA      SEX        M   3 100
+# 
+# $RACE
+#    studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var                  anal_val cnt pct
+# 35     ABC       35      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA     RACE BLACK OR AFRICAN AMERICAN   1  50
+# 36     ABC       36      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA     RACE                     WHITE   2 100
+# 37     ABC       37      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA     RACE                     WHITE   2 100
+# 38     ABC       38      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA     RACE                     WHITE   1  50
+# 39     ABC       39      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA     RACE                     WHITE   3 100
+
+```
+
+
+
+
+
+
+
+

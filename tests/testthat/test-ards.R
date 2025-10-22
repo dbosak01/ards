@@ -367,7 +367,7 @@ test_that("ards8: init_ards() works as expected when no parameters are passed.",
   
 })
 
-test_that("ards2: add_ards() works as expected on one column with multiple byvars.", {
+test_that("ards9: add_ards() works as expected on one column with multiple byvars.", {
   
   
   init_ards(studyid = "abc",
@@ -404,3 +404,124 @@ test_that("ards2: add_ards() works as expected on one column with multiple byvar
 })
 
 
+test_that("ards10: restore_ards() basic functionality.", {
+  
+  library(dplyr)
+  library(tibble)
+  library(tidyr)
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  dat <- mtcars
+  dat$trt <- c(rep("A", 16), rep("B", 16))
+  
+  
+  mpgdf <- dat |>
+    select(mpg, trt) |>
+    group_by(trt) |>
+    summarize(n = n(),
+              mean = mean(mpg),
+              std = sd(mpg),
+              median = median(mpg),
+              min = min(mpg),
+              max = max(mpg)) |>
+    mutate(analvar = "mpg") |>
+    ungroup() |>
+    add_ards(statvars = c("n", "mean", "std", "median", "min", "max"),
+             statdesc = c("N", "Mean", "Std", "Median", "Min", "Max"),
+             anal_var = "mpg", trtvar = "trt") |>
+    transmute(analvar, trt,
+              n = sprintf("%d", n),
+              mean_sd = sprintf("%.1f (%.2f)", mean, std),
+              median = sprintf("%.1f", median),
+              min_max = sprintf("%.1f-%.1f", min, max)) |>
+    pivot_longer(c(n, mean_sd, median, min_max),
+                 names_to = "label", values_to = "stats") |>
+    pivot_wider(names_from = trt,
+                values_from = c(stats)) |>
+    transmute(analvar, label = c("N", "Mean (Std)", "Median", "Min-Max"),
+              trtA = A, trtB = B)
+  
+  mpgdf
+  
+  expect_equal(is.null(mpgdf), FALSE)
+  expect_equal(nrow(mpgdf), 4)
+  expect_equal(ncol(mpgdf), 4)
+  
+  
+  trt_pop <- count(dat, trt) |> deframe()
+  
+  cyldf <- dat |>
+    mutate(denom = trt_pop[paste0(dat$trt)]) |>
+    group_by(cyl, trt, denom) |>
+    summarize(cnt = n()) |>
+    mutate(analvar = "cyl", label = paste(cyl, "Cylinder"),  pct = denom / cnt) |>
+    ungroup() |>
+    add_ards(statvars = c("cnt", "denom", "pct"), statdesc = "label",
+             anal_var = "cyl", trtvar = "trt") |>
+    pivot_wider(names_from = trt,
+                values_from = c(cnt, pct)) |>
+    transmute(analvar, label,
+              trtA = sprintf("%1d (%5.2f%%)", cnt_A, pct_A),
+              trtB = sprintf("%1d (%5.2f%%)", cnt_B, pct_B),)
+  
+  cyldf
+  
+  expect_equal(is.null(cyldf), FALSE)
+  expect_equal(nrow(cyldf), 3)
+  expect_equal(ncol(cyldf), 4)
+  
+  final <- bind_rows(mpgdf, cyldf)
+  
+  final
+  
+  expect_equal(is.null(final), FALSE)
+  expect_equal(nrow(final), 7)
+  expect_equal(ncol(final), 4)
+  
+  
+  tmp <- get_ards()
+  tmp
+  
+  expect_equal(is.null(tmp), FALSE)
+  expect_equal(nrow(tmp), 30)
+  expect_equal(ncol(tmp), 33)
+  
+  
+  res <- restore_ards(tmp)
+  
+  
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 36) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 33)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Test removing some variables
+  tmp$byvar9 <- NULL
+  tmp$byval9 <- NULL
+  tmp$statdesc <- NULL
+  tmp$resultid <- NULL
+  tmp$studyid <- NULL
+  tmp$tableid <- NULL
+  
+  # Should still work
+  res <- restore_ards(tmp)
+  
+  # Missing variables not output
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 31) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 28)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Test removing required variable
+  tmp$anal_var <- NULL
+  expect_error(restore_ards(tmp))
+  
+})

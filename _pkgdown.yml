@@ -9,3 +9,4 @@ reference:
   - init_ards
   - add_ards
   - get_ards
+  - restore_ards

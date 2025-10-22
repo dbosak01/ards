@@ -63,6 +63,7 @@ ards <- get_ards()
 \seealso{
 Other ards: 
 \code{\link{add_ards}()},
-\code{\link{init_ards}()}
+\code{\link{init_ards}()},
+\code{\link{restore_ards}()}
 }
 \concept{ards}

@@ -421,3 +421,209 @@ get_ards <- function() {
 
 }
 
+
+#' @title Restore an ARDS dataset
+#' @description
+#' The \code{restore_ards} function restores the ARDS data to wide format.
+#' The wide data can then be used for reporting.
+#' @details
+#' The \code{\link{init_ards}}, \code{\link{add_ards}}, and \code{\link{get_ards}} 
+#' functions take data in wide format, and convert it to narrow format.  The
+#' \code{restore_ards} function converts the narrow ARDS data back to wide format.
+#' 
+#' Wide format means there is a column for each statistic.  Narrow format
+#' means all statistics are in a single column. 
+#' 
+#' Because each analysis variable can have any number of statistics, when
+#' converting from narrow to wide, the resulting data frames can have different
+#' numbers of colums and different column names.  Therefore, the \code{restore_ards}
+#' function returns a list of data frames, one for each analysis variable.
+#' 
+#' For each data frame, the statistics will each be in a separate column, 
+#' named according to the original statistic variable name.  The label of the 
+#' statistics columns will be the statistic description.
+#' 
+#' All other columns will be populated according to the values contained in the 
+#' ARDS dataset. These values can be useful for tracing back the source of the
+#' statistical values.  
+#' 
+#' Once the ARDS data is restored and the statistics are back in separate
+#' columns, it will be easy to create a report, figure, or other output.
+#' 
+#' @param data The input dataset to restore.  The input dataset should correspond
+#' to the CDISC ARDS structure, such as that created by \code{get_ards}. However,
+#' not all variables are required.  The only required variables are "anal_var", 
+#' "statname", and "statval".  All other variables will be process if available,
+#' and ignored otherwise.
+#' @return A list of data frames, transposed back into wide format.  The 
+#' list will have one or more items, distinguished by the analysis variable.
+#' The list item name will correspond to the name of the analysis variable. 
+#' @examples
+#' library(ards)
+#' library(dplyr)
+#' 
+#' # Initialize the ARDS
+#' # - These values will be common through the dataset
+#' init_ards(studyid = "IRIS",
+#'           tableid = "01", adsns = "iris",
+#'           population = "all flowers",
+#'           time = "1973")
+#' 
+#' # Perform analysis on Petal.Length
+#' # - Using Species as a by-group
+#' analdf1 <- iris |> 
+#'   select(Petal.Length, Species) |> 
+#'   group_by(Species) |> 
+#'   summarize(n = n(),
+#'             mean = mean(Petal.Length),
+#'             std = sd(Petal.Length),
+#'             min = min(Petal.Length),
+#'             max = max(Petal.Length)) |> 
+#'   add_ards(statvars = c("n", "mean", "std", "min", "max"),
+#'            statdesc = c("Count", "Mean", "STD", "Minimum", "Maximum"),
+#'            anal_var = "Petal.Length", trtvar = "Species")
+#'            
+#' # Perform analysis on Petal.Width
+#' # - Using Species as a by-group
+#' analdf2 <- iris |> 
+#'   select(Petal.Width, Species) |> 
+#'   group_by(Species) |> 
+#'   summarize(n = n(),
+#'             mean = mean(Petal.Width),
+#'             std = sd(Petal.Width),
+#'             min = min(Petal.Width),
+#'             max = max(Petal.Width)) |> 
+#'   add_ards(statvars = c("n", "mean", "std", "min", "max"),
+#'            statdesc = c("Count", "Mean", "STD", "Minimum", "Maximum"),
+#'            anal_var = "Petal.Width", trtvar = "Species")
+#' 
+#' # Get the ARDS
+#' ards <- get_ards() 
+#' 
+#' # Convert back to wide format
+#' res <- restore_ards(ards)
+#' 
+#' # View list names
+#' print(names(res))
+#' # [1] "Petal.Length" "Petal.Width" 
+#' 
+#' # Pull out Petal.Length
+#' r1 <- res$Petal.Length
+#' 
+#' # View column names on Petal.Length
+#' print(names(r1))
+#' # [1] "studyid"    "tableid"    "adsns"      "population"
+#' # [5] "time"       "where"      "byvar1"     "byvar2"    
+#' # [9] "byvar3"     "byvar4"     "byvar5"     "byvar6"    
+#' # [13] "byvar7"     "byvar8"     "byvar9"     "byval1"    
+#' # [17] "byval2"     "byval3"     "byval4"     "byval5"    
+#' # [21] "byval6"     "byval7"     "byval8"     "byval9"    
+#' # [25] "trtvar"     "trtval"     "paramcd"    "anal_var"  
+#' # [29] "anal_val"   "n"          "mean"       "std"       
+#' # [33] "min"        "max" 
+#' 
+#' # View stat data on Petal.Length
+#' print(r1[ , c("trtvar", "trtval", "anal_var", "n", "mean", "std", "min", "max")])
+#' #    trtvar     trtval     anal_var  n  mean       std min max
+#' # 1 Species     setosa Petal.Length 50 1.462 0.1736640 1.0 1.9
+#' # 2 Species versicolor Petal.Length 50 4.260 0.4699110 3.0 5.1
+#' # 3 Species  virginica Petal.Length 50 5.552 0.5518947 4.5 6.9
+#' 
+#' # Uncomment to view restored data
+#' # View(res$Petal.Length)
+#' # View(res$Petal.Width)
+#' 
+#' @family ards
+#' @export
+restore_ards <- function(data) {
+  
+  # Required variable names
+  vnms <- c("studyid",  "resultid", "tableid", "adsns", "population",
+            "time", "where", "byvar1", "byvar2", "byvar3",    
+            "byvar4", "byvar5", "byvar6", "byvar7", "byvar8",    
+            "byvar9", "byval1", "byval2", "byval3", "byval4",    
+            "byval5", "byval6", "byval7", "byval8", "byval9",    
+            "trtvar", "trtval", "paramcd", "anal_var", "anal_val",  
+            "statname", "statval", "statdesc")
+  
+  vnms <- c("anal_var", "statname", "statval")
+  
+  # Actual variable names
+  nms <-  names(data)
+  
+  # Difference
+  dnms <- !vnms %in% nms
+  if (any(dnms == TRUE)) {
+    stop(paste0("Required variables missing from input dataset: ", 
+                paste0(vnms[dnms], collapse = ", ")))
+    
+  }
+  
+  # Flag multiple studies
+  if ("studyid" %in% nms) {
+    if (length(unique(data$studyid)) > 1) {
+      
+      stop("Function does not allow more than one 'studyid'.  Please subset the data for each study.") 
+    }
+  }
+  
+  # Flag multiple tables
+  if ("tableid" %in% nms) {
+    if (length(unique(data$tableid)) > 1) {
+      
+      stop("Function does not allow more than one 'tableid'.  Please subset the data for each table.") 
+    }
+  }
+  
+  # Order by resultid, just to make sure
+  if ("resultid" %in% nms) {
+    mdat <- data[order(data$resultid), ]
+  } else {
+    mdat <- data
+  }
+  
+  # Get analysis variable names
+  anms <- unique(mdat$anal_var)
+  
+  # Set up results list
+  ret <- list()
+  
+  for (anl in anms) {
+    
+    # Subset by analysis variable
+    sdat <- mdat[mdat$anal_var == anl, ]
+    
+    # Get unique stat names
+    svars <- unique(sdat$statname)
+    
+    # Common columns
+    cls <- nms[!nms %in% c("statname", "statval", "statdesc")]
+    
+    # Create template
+    rdat <- sdat[sdat$statname == svars[1], cls]
+      
+    for (svar in svars) {
+      
+      # Subset for stat variable
+      if ("statdesc" %in% nms) {
+        vdat <- sdat[sdat$statname == svar, c("statname", "statval", "statdesc")]
+      } else {
+        vdat <- sdat[sdat$statname == svar, c("statname", "statval")]
+      }
+      
+      # Create column for statistic
+      rdat[[svar]] <- vdat[["statval"]]
+      
+      # Assign the label
+      if ("statdesc" %in% nms) {
+        attr(rdat[[svar]], "label") <- vdat[["statdesc"]][1]
+      }
+      
+    }
+    
+    # Add to return list
+    ret[[anl]] <- rdat
+  }
+  
+  return(ret)
+}
