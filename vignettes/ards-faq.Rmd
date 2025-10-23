@@ -1,0 +1,88 @@
+---
+title: "Frequently Asked Questions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FAQ}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+```
+
+Below are some frequently asked questions about the **ards** package. Click
+on the links below to navigate to the full question and answer content.
+
+## Index{#top}
+
+* [What is the **ards** package?](#ards)
+* [Why did you write the **ards** package?](#why)
+* [What is the difference between **ards** and the **cards** package?](#cards)
+
+
+## Content
+
+### What is the **ards** package? {#ards}
+
+**Q:** I don't quite understand the concept of the **ards** package. 
+What are you trying to do with it?
+
+**A:** The **ards** package helps you create an Analysis Results Dataset (ARD)
+based on a CDISC recommended structure.  The functions takes your existing statistics,
+transposes them into a vertical format, and collects them into a single 
+dataset.  This dataset can then be saved, shared with sponsors, or used to produce
+any number of outputs.  The **ards** package simply facilitates this workflow.
+
+[top](#top)
+
+******
+
+### Why did you write the **ards** package? {#why}
+
+**Q:** There are several packages that create an ARDS dataset. Why did
+you write this one?
+
+**A:** The **ards** package was actually the first R package that output
+the CDISC ARDS structure.  At the time it was written, in early 2023, there were 
+no other public, ARDS-related packages.  The **ards** package filled a need for 
+that time, and still addresses some use cases that are not supported by other 
+packages.
+
+[top](#top)
+
+******
+
+### What is the difference between **ards** and the **cards** package? {#cards}
+
+**Q:** I see a lot of people using the **cards** package, which also
+produces an ARDS dataset. What is the difference between **ards** and **cards**? 
+
+**A:** The **ards** package does not produce statistics, the **cards** package 
+does.  The **ards** package assumes you know how to produce the statistics 
+you want, and merely re-organizes them into the ARDS structure.  The 
+**cards** package both produces the statistics, and outputs them in the ARDS
+structure. The packages have different use cases.  You should consider your
+requirements and select the package that is most appropriate for your situation.
+
+[top](#top)
+
+******
+
+
+
+<!-- ### Question 1? {#q1} -->
+
+<!-- **Q:** Question -->
+
+<!-- **A:** Answer -->
+
+<!-- [top](#top) -->
+
+<!-- ****** -->

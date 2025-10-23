@@ -490,15 +490,24 @@ test_that("ards10: restore_ards() basic functionality.", {
   expect_equal(nrow(tmp), 30)
   expect_equal(ncol(tmp), 33)
   
-  
-  res <- restore_ards(tmp)
-  
+  # Init_vars TRUE
+  res <- restore_ards(tmp, init_vars = TRUE)
   
   expect_equal(length(res), 2)
   expect_equal(names(res), c("mpg", "cyl"))
-  expect_equal(ncol(res$mpg), 36) 
+  expect_equal(ncol(res$mpg), 14) 
   expect_equal(nrow(res$mpg), 2)
-  expect_equal(ncol(res$cyl), 33)
+  expect_equal(ncol(res$cyl), 12)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Init_vars FALSE
+  res <- restore_ards(tmp)
+  
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 8) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 6)
   expect_equal(nrow(res$cyl), 6)
   
   # Test removing some variables
@@ -508,6 +517,7 @@ test_that("ards10: restore_ards() basic functionality.", {
   tmp$resultid <- NULL
   tmp$studyid <- NULL
   tmp$tableid <- NULL
+  tmp$population <- NA
   
   # Should still work
   res <- restore_ards(tmp)
@@ -515,13 +525,109 @@ test_that("ards10: restore_ards() basic functionality.", {
   # Missing variables not output
   expect_equal(length(res), 2)
   expect_equal(names(res), c("mpg", "cyl"))
-  expect_equal(ncol(res$mpg), 31) 
+  expect_equal(ncol(res$mpg), 8) 
   expect_equal(nrow(res$mpg), 2)
-  expect_equal(ncol(res$cyl), 28)
+  expect_equal(ncol(res$cyl), 6)
   expect_equal(nrow(res$cyl), 6)
   
   # Test removing required variable
   tmp$anal_var <- NULL
   expect_error(restore_ards(tmp))
+  
+})
+
+test_that("ards11: restore_ards() works with by variable.", {
+  
+  
+  df <- read.table(header = TRUE, text = '
+    var    val label         CNT DENOM   PCT                TRT
+    "cyl"  8   "8 Cylinder" 10   19     0.5263157894736842 A
+    "cyl"  6   "6 Cylinder" 4    19     0.2105263157894737 A
+    "cyl"  4   "4 Cylinder" 5    19     0.2631578947368421 A
+    "cyl"  8   "8 Cylinder" 4    13     0.3076923076923077 B
+    "cyl"  6   "6 Cylinder" 3    13     0.2307692307692308 B
+    "cyl"  4   "4 Cylinder" 6    13     0.4615384615384615 B')
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  # No trtvar but there is a byvar
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), statdesc = "label",
+           anal_var = "cyl", anal_val = "val", byvars = "TRT")
+  
+  tmp <- get_ards()
+  
+  tmp
+  
+  expect_equal(is.null(tmp), FALSE)
+  expect_equal(nrow(tmp), 18)
+  expect_equal(ncol(tmp), 33)
+  
+  # Restore
+  res <- restore_ards(tmp)
+  
+  # Still 6 columns
+  expect_equal(is.null(res), FALSE)
+  expect_equal(nrow(res$cyl), 6)
+  expect_equal(ncol(res$cyl), 6)
+  
+})
+
+
+test_that("ards12: restore_ards() anal_var parameter works as expected.", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, 3))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = "label",
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = "label",
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 3)
+  expect_equal("anal_var" %in% names(r1), TRUE)
+
+  # Rename anal_var
+  res <- restore_ards(ardsf, anal_var = "analblock")
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 3)
+  expect_equal("analblock" %in% names(r1), TRUE)
+  
+  
+  # Remove anal_var
+  res <- restore_ards(ardsf, anal_var = NULL)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 2)
+  expect_equal("anal_var" %in% names(r1), FALSE)
   
 })

@@ -2,6 +2,14 @@ url:  https://ards.r-sassy.org
 template:
   bootstrap: 5
 
+articles:
+- title: Examples
+  navbar: ~
+  contents:
+  - ards-example1
+  - ards-example2
+  - ards-faq
+  
 reference:
 - title: ARDS Functions
   desc: Functions to create an Analysis Results Dataset (ARDS)
@@ -10,3 +18,14 @@ reference:
   - add_ards
   - get_ards
   - restore_ards
+
+navbar:
+  type: inverse
+  structure:
+    right: [home, intro, articles, reference, faq, news, github]
+    left: []
+  components:
+    faq:
+      text: FAQ
+      href: ./articles/ards-faq.html
+    

@@ -455,6 +455,15 @@ get_ards <- function() {
 #' not all variables are required.  The only required variables are "anal_var", 
 #' "statname", and "statval".  All other variables will be process if available,
 #' and ignored otherwise.
+#' @param init_vars Whether or not to keep the initialization variables on
+#' the restored data frames.  Default is FALSE. The initialization variables
+#' include "studyid", "tableid", "adsns", "population", "time", and "where".
+#' To keep these variables on the restored data frames, set \code{init_vars} 
+#' to TRUE.
+#' @param anal_var The name to use for the analysis variable column. Default
+#' is "anal_var". If you need a different name for this column, pass the name
+#' as a quoted string here.  To eliminate the column entirely, pass a NULL
+#' on this parameter.
 #' @return A list of data frames, transposed back into wide format.  The 
 #' list will have one or more items, distinguished by the analysis variable.
 #' The list item name will correspond to the name of the analysis variable. 
@@ -512,30 +521,22 @@ get_ards <- function() {
 #' 
 #' # View column names on Petal.Length
 #' print(names(r1))
-#' # [1] "studyid"    "tableid"    "adsns"      "population"
-#' # [5] "time"       "where"      "byvar1"     "byvar2"    
-#' # [9] "byvar3"     "byvar4"     "byvar5"     "byvar6"    
-#' # [13] "byvar7"     "byvar8"     "byvar9"     "byval1"    
-#' # [17] "byval2"     "byval3"     "byval4"     "byval5"    
-#' # [21] "byval6"     "byval7"     "byval8"     "byval9"    
-#' # [25] "trtvar"     "trtval"     "paramcd"    "anal_var"  
-#' # [29] "anal_val"   "n"          "mean"       "std"       
-#' # [33] "min"        "max" 
+#' # [1] "Species"  "anal_var" "n"        "mean"     "std"      "min"      "max"    
 #' 
 #' # View stat data on Petal.Length
-#' print(r1[ , c("trtvar", "trtval", "anal_var", "n", "mean", "std", "min", "max")])
-#' #    trtvar     trtval     anal_var  n  mean       std min max
-#' # 1 Species     setosa Petal.Length 50 1.462 0.1736640 1.0 1.9
-#' # 2 Species versicolor Petal.Length 50 4.260 0.4699110 3.0 5.1
-#' # 3 Species  virginica Petal.Length 50 5.552 0.5518947 4.5 6.9
+#' print(r1)
+#' #      Species     anal_var  n  mean       std min max
+#' # 1     setosa Petal.Length 50 1.462 0.1736640 1.0 1.9
+#' # 2 versicolor Petal.Length 50 4.260 0.4699110 3.0 5.1
+#' # 3  virginica Petal.Length 50 5.552 0.5518947 4.5 6.9
 #' 
-#' # Uncomment to view restored data
+#' # Uncomment to view restored datasets
 #' # View(res$Petal.Length)
 #' # View(res$Petal.Width)
 #' 
 #' @family ards
 #' @export
-restore_ards <- function(data) {
+restore_ards <- function(data, init_vars = FALSE, anal_var = "anal_var") {
   
   # Required variable names
   vnms <- c("studyid",  "resultid", "tableid", "adsns", "population",
@@ -601,6 +602,73 @@ restore_ards <- function(data) {
     
     # Create template
     rdat <- sdat[sdat$statname == svars[1], cls]
+    
+    # Rename treatment column if found 
+    if ("trtvar" %in% nms & "trtval" %in% nms) {
+      if (is.na(rdat$trtvar[1]) | all(is.na(rdat$trtval))) {
+        rdat$trtvar <- NULL
+        rdat$trtval <- NULL
+      } else {
+        names(rdat) <- sub("trtval", rdat$trtvar[1], names(rdat), fixed = TRUE)
+        rdat$trtvar <- NULL
+      }
+    }
+    
+    # Rename analysis value column if found 
+    if ("anal_var" %in% nms & "anal_val" %in% nms) {
+      if (all(is.na(rdat$anal_val)) | is.na(rdat$anal_var[1])) {
+        rdat$anal_val <- NULL
+      } else {
+        names(rdat) <- sub("anal_val", rdat$anal_var[1], names(rdat), fixed = TRUE)
+      }
+    }
+    
+    # Rename or remove analysis variable column
+    if ("anal_var" %in% nms) {
+      if (is.null(anal_var)) {
+        rdat$anal_var <- NULL 
+      } else if (anal_var != "anal_var") {
+        names(rdat) <- sub("anal_var", anal_var, names(rdat), fixed = TRUE)
+      }
+    }
+    
+    # Rename/remove by vars if found 
+    for (bidx in seq(1, 9)) {
+      bvnm <- paste0("byvar", bidx)
+      bvvl <- paste0("byval", bidx)
+      if (bvnm %in% nms & bvvl %in% nms) {
+        if (!is.na(rdat[[bvnm]][1])) {
+          names(rdat) <- sub(bvvl, rdat[[bvnm]][1], names(rdat), fixed = TRUE)
+          rdat[[bvnm]] <- NULL
+        } else {
+          if (all(is.na(rdat[[bvnm]])) & all(is.na(rdat[[bvvl]]))) {
+            rdat[[bvnm]] <- NULL
+            rdat[[bvvl]] <- NULL
+          }
+        }
+      }
+    }
+    
+    # Remove resultid if found 
+    if ("resultid" %in% nms) {
+      rdat$resultid <- NULL
+    }
+    
+    # Remove paramcd column if NA 
+    if ("paramcd" %in% nms) {
+      if (all(is.na(rdat$paramcd))) {
+        rdat$paramcd <- NULL
+      }
+    }
+    
+    # Remove identifying variables if NA
+    for (idnm in c("studyid", "tableid", "adsns", "population", "time", "where")) {
+      if (idnm %in% nms) {
+        if (all(is.na(rdat[[idnm]])) | init_vars == FALSE) {
+          rdat[[idnm]] <- NULL 
+        }
+      }
+    }
       
     for (svar in svars) {
       
@@ -620,6 +688,9 @@ restore_ards <- function(data) {
       }
       
     }
+    
+    # Clear line numbers
+    rownames(rdat) <- NULL
     
     # Add to return list
     ret[[anl]] <- rdat

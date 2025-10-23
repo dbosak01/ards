@@ -2,8 +2,11 @@ pandoc: 3.6.3
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
+  ards-example1: ards-example1.html
+  ards-example2: ards-example2.html
+  ards-faq: ards-faq.html
   ards: ards.html
-last_built: 2025-10-22T01:05Z
+last_built: 2025-10-23T15:48Z
 urls:
   reference: https://ards.r-sassy.org/reference
   article: https://ards.r-sassy.org/articles

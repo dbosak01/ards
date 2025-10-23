@@ -22,7 +22,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="inverse" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">ards</a>
 
@@ -34,15 +34,20 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/ards.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-      </ul>
+      <ul class="navbar-nav me-auto"></ul>
 <ul class="navbar-nav">
-<li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
-</form></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/ards.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/ards-example1.html">Example 1: ARDS in Parallel</a></li>
+    <li><a class="dropdown-item" href="../articles/ards-example2.html">Example 2: ARDS in Serial</a></li>
+    <li><a class="dropdown-item" href="../articles/ards-faq.html">Frequently Asked Questions</a></li>
+  </ul>
+</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href=".././articles/ards-faq.html">FAQ</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/dbosak01/ards/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
@@ -92,8 +97,8 @@ This function is typically called at the end of the program.</li>
 <p>The above steps result in an ARDS data frame. Once this data frame is
 extracted, you may save it to disk, or insert it into a database, as
 desired.</p>
-<p>If desired, you may also convert the ARDS data structure back into a
-wide form analysis structure for reporting. See the
+<p>If needed, you may also convert the ARDS data structure back into a
+wide-form analysis structure for reporting. See the
 <code><a href="../reference/restore_ards.html">restore_ards()</a></code> function description below.</p>
 <div class="section level2">
 <h2 id="ards-structure">ARDS Structure<a class="anchor" aria-label="anchor" href="#ards-structure"></a>
@@ -157,184 +162,7 @@ data frame. Examine the following example:</p>
 <span><span class="co"># Uncomment to view ards</span></span>
 <span><span class="co"># View(ards)</span></span></code></pre></div>
 <p>Here is an image of the ARDS dataset created above:
-<img src="../man/images/ards2.png"></p>
-</div>
-<div class="section level2">
-<h2 id="more-realistic-example">More Realistic Example<a class="anchor" aria-label="anchor" href="#more-realistic-example"></a>
-</h2>
-<p>As can be seen above, the functions in the <strong>ards</strong>
-package are easy to use. They can be integrated into a standard Table,
-Listing, and Figure (TLF) program, or a data preparation program. In
-many cases, the program does not need to be restructured to accommodate
-the <strong>ards</strong> functions.</p>
-<p>Let us look at a more realistic program. In this demonstration, we
-will create the analysis for a Demographics table. Note the following
-about this program:</p>
-<ul>
-<li>The input data is a subset of 10 subjects and some relevant
-variables to make the program easier to read and understand.</li>
-<li>The <code><a href="../reference/init_ards.html">init_ards()</a></code> function is called once at the top of
-the program. The values passed will be the same for all rows of the
-ARDS.</li>
-<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function identifies variables in the
-analysis dataset that you want to add to the ARDS. The variable values
-will be extracted from the analysis data and transformed into the ARDS
-structure.</li>
-<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function can be placed in the middle of
-a data pipeline, and will not interfere with your analysis.</li>
-<li>The <code><a href="../reference/add_ards.html">add_ards()</a></code> function is called immediately after the
-calculations, before any formatting or transformations. The function is
-called at this point so that the ARDS will contains the original numeric
-values with full precision.</li>
-<li>When the analysis is complete, the <code><a href="../reference/get_ards.html">get_ards()</a></code> is called
-to retrieve the ARDS dataset. The ARDS dataset is a standard R data
-frame that can be saved, combined with other analysis results, or passed
-to another program for additional processing.</li>
-</ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ards.r-sassy.org">ards</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create input data</span></span>
-<span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>
-<span><span class="st">STUDYID DOMAIN  USUBJID SUBJID  SITEID  BRTHDTC AGE AGEU    SEX RACE    ETHNIC  ARMCD   ARM</span></span>
-<span><span class="st">ABC DM  ABC-01-049  49  1   11/12/1966  39  YEARS   M   "WHITE" "NOT HISPANIC OR LATINO"    4   "ARM D"</span></span>
-<span><span class="st">ABC DM  ABC-01-050  50  1   12/19/1958  47  YEARS   M   "WHITE" "NOT HISPANIC OR LATINO"    2   "ARM B"</span></span>
-<span><span class="st">ABC DM  ABC-01-051  51  1   5/2/1972    34  YEARS   M   "WHITE" "NOT HISPANIC OR LATINO"    1   "ARM A"</span></span>
-<span><span class="st">ABC DM  ABC-01-052  52  1   6/27/1961   45  YEARS   F   "WHITE" "UNKNOWN"   3   "ARM C"</span></span>
-<span><span class="st">ABC DM  ABC-01-053  53  1   4/7/1980    26  YEARS   F   "WHITE" "NOT HISPANIC OR LATINO"    2   "ARM B"</span></span>
-<span><span class="st">ABC DM  ABC-01-054  54  1   9/13/1962   44  YEARS   M   "WHITE" "NOT HISPANIC OR LATINO"    4   "ARM D"</span></span>
-<span><span class="st">ABC DM  ABC-01-055  55  1   6/11/1959   47  YEARS   F   "BLACK OR AFRICAN AMERICAN" "UNKNOWN"   3   "ARM C"</span></span>
-<span><span class="st">ABC DM  ABC-01-056  56  1   5/2/1975    31  YEARS   M   "WHITE" "NOT HISPANIC OR LATINO"    1   "ARM A"</span></span>
-<span><span class="st">ABC DM  ABC-01-113  113 1   2/8/1932    74  YEARS   M   "WHITE" "UNKNOWN"   4   "ARM D"'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Initalize ARDS</span></span>
-<span><span class="fu"><a href="../reference/init_ards.html">init_ards</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="st">"ABC"</span>,</span>
-<span>          tableid <span class="op">=</span> <span class="st">"01"</span>, adsns <span class="op">=</span> <span class="st">"adsl"</span>,</span>
-<span>          population <span class="op">=</span> <span class="st">"safety population"</span>,</span>
-<span>          time <span class="op">=</span> <span class="st">"SCREENING"</span>, where <span class="op">=</span> <span class="st">"saffl = TRUE"</span>, reset <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Perform analysis on AGE variable</span></span>
-<span><span class="va">agedf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">ARM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ARM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>            mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>,</span>
-<span>            std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>,</span>
-<span>            median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>,</span>
-<span>            min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>,</span>
-<span>            max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analvar <span class="op">=</span> <span class="st">"AGE"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_ards.html">add_ards</a></span><span class="op">(</span>statvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"std"</span>, <span class="st">"median"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
-<span>           statdesc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"Mean"</span>, <span class="st">"Std"</span>, <span class="st">"Median"</span>, <span class="st">"Min"</span>, <span class="st">"Max"</span><span class="op">)</span>,</span>
-<span>           anal_var <span class="op">=</span> <span class="st">"AGE"</span>, trtvar <span class="op">=</span> <span class="st">"ARM"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">analvar</span>, <span class="va">ARM</span>,</span>
-<span>            n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d"</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>            mean_sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f (%.2f)"</span>, <span class="va">mean</span>, <span class="va">std</span><span class="op">)</span>,</span>
-<span>            median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f"</span>, <span class="va">median</span><span class="op">)</span>,</span>
-<span>            min_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f-%.1f"</span>, <span class="va">min</span>, <span class="va">max</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">mean_sd</span>, <span class="va">median</span>, <span class="va">min_max</span><span class="op">)</span>,</span>
-<span>               names_to <span class="op">=</span> <span class="st">"label"</span>, values_to <span class="op">=</span> <span class="st">"stats"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>              values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">analvar</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"Mean (Std)"</span>, <span class="st">"Median"</span>, <span class="st">"Min-Max"</span><span class="op">)</span>,</span>
-<span>           trtA <span class="op">=</span> <span class="va">`ARM A`</span>, trtB <span class="op">=</span> <span class="va">`ARM B`</span>, trtC <span class="op">=</span> <span class="va">`ARM C`</span>, trtD <span class="op">=</span> <span class="va">`ARM D`</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View analysis results</span></span>
-<span><span class="va">agedf</span></span>
-<span><span class="co">#   # A tibble: 4 × 6</span></span>
-<span><span class="co">#   analvar label      trtA        trtB         trtC        trtD        </span></span>
-<span><span class="co">#   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;       </span></span>
-<span><span class="co"># 1 AGE     N          2           2            2           3           </span></span>
-<span><span class="co"># 2 AGE     Mean (Std) 32.5 (2.12) 36.5 (14.85) 46.0 (1.41) 52.3 (18.93)</span></span>
-<span><span class="co"># 3 AGE     Median     32.5        36.5         46.0        44.0        </span></span>
-<span><span class="co"># 4 AGE     Min-Max    31.0-34.0   26.0-47.0    45.0-47.0   39.0-74.0  </span></span>
-<span></span>
-<span><span class="co"># Get population counts</span></span>
-<span><span class="va">trt_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="va">ARM</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/enframe.html" class="external-link">deframe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">trt_pop</span></span>
-<span><span class="co"># ARM A ARM B ARM C ARM D </span></span>
-<span><span class="co">#   2     2     2     3 </span></span>
-<span></span>
-<span><span class="co"># Perform analysis on SEX variable</span></span>
-<span><span class="va">sexdf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="va">trt_pop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">ARM</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">SEX</span>, <span class="va">ARM</span>, <span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>cnt <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">SEX</span>, <span class="va">ARM</span>, <span class="va">cnt</span>, analvar <span class="op">=</span> <span class="st">"SEX"</span>, label <span class="op">=</span> <span class="va">SEX</span>,  pct <span class="op">=</span>  <span class="va">cnt</span> <span class="op">/</span> <span class="va">denom</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_ards.html">add_ards</a></span><span class="op">(</span>statvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cnt"</span>, <span class="st">"pct"</span><span class="op">)</span>, statdesc <span class="op">=</span> <span class="st">"label"</span>,</span>
-<span>           anal_var <span class="op">=</span> <span class="st">"SEX"</span>, trtvar <span class="op">=</span> <span class="st">"ARM"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>              values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cnt</span>, <span class="va">pct</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">analvar</span>, <span class="va">label</span>,</span>
-<span>            trtA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM A`</span>, <span class="va">`pct_ARM A`</span><span class="op">)</span>,</span>
-<span>            trtB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM B`</span>, <span class="va">`pct_ARM B`</span><span class="op">)</span>,</span>
-<span>            trtC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM C`</span>, <span class="va">`pct_ARM C`</span><span class="op">)</span>,</span>
-<span>            trtD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM D`</span>, <span class="va">`pct_ARM D`</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View analysis results</span></span>
-<span><span class="va">sexdf</span></span>
-<span><span class="co">#   analvar label trtA      trtB     trtC      trtD     </span></span>
-<span><span class="co">#   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;    </span></span>
-<span><span class="co"># 1 SEX     F     NA ( NA%) 1 ( 50%) 2 (100%)  NA ( NA%)</span></span>
-<span><span class="co"># 2 SEX     M     2 (100%)  1 ( 50%) NA ( NA%) 3 (100%) </span></span>
-<span></span>
-<span><span class="co"># Perform analysis on RACE</span></span>
-<span><span class="va">racedf</span> <span class="op">&lt;-</span> <span class="va">adsl</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="va">trt_pop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">ARM</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">RACE</span>, <span class="va">ARM</span>, <span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>cnt <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">RACE</span>, <span class="va">ARM</span>, <span class="va">cnt</span>, analvar <span class="op">=</span> <span class="st">"RACE"</span>, label <span class="op">=</span> <span class="va">RACE</span>,  pct <span class="op">=</span>  <span class="va">cnt</span> <span class="op">/</span> <span class="va">denom</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_ards.html">add_ards</a></span><span class="op">(</span>statvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cnt"</span>, <span class="st">"pct"</span><span class="op">)</span>, statdesc <span class="op">=</span> <span class="st">"label"</span>,</span>
-<span>           anal_var <span class="op">=</span> <span class="st">"RACE"</span>, trtvar <span class="op">=</span> <span class="st">"ARM"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>              values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cnt</span>, <span class="va">pct</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">analvar</span>, <span class="va">label</span>,</span>
-<span>            trtA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM A`</span>, <span class="va">`pct_ARM A`</span><span class="op">)</span>,</span>
-<span>            trtB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM B`</span>, <span class="va">`pct_ARM B`</span><span class="op">)</span>,</span>
-<span>            trtC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM C`</span>, <span class="va">`pct_ARM C`</span><span class="op">)</span>,</span>
-<span>            trtD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1d (%3.0f%%)"</span>, <span class="va">`cnt_ARM D`</span>, <span class="va">`pct_ARM D`</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View analysis results</span></span>
-<span><span class="va">racedf</span></span>
-<span><span class="co">#   analvar label                     trtA      trtB      trtC     trtD     </span></span>
-<span><span class="co">#   &lt;chr&gt;   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    </span></span>
-<span><span class="co"># 1 RACE    BLACK OR AFRICAN AMERICAN NA ( NA%) NA ( NA%) 1 ( 50%) NA ( NA%)</span></span>
-<span><span class="co"># 2 RACE    WHITE                     2 (100%)  2 (100%)  1 ( 50%) 3 (100%) </span></span>
-<span></span>
-<span><span class="co"># Combine all analysis into final data frame</span></span>
-<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">agedf</span>, <span class="va">sexdf</span>, <span class="va">racedf</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View final data frame</span></span>
-<span><span class="co"># - This data frame would normally used for reporting</span></span>
-<span><span class="va">final</span></span>
-<span><span class="co"># # A tibble: 8 × 6</span></span>
-<span><span class="co">#   analvar label                     trtA        trtB         trtC        trtD        </span></span>
-<span><span class="co">#   &lt;chr&gt;   &lt;chr&gt;                     &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;       </span></span>
-<span><span class="co"># 1 AGE     N                         2           2            2           3           </span></span>
-<span><span class="co"># 2 AGE     Mean (Std)                32.5 (2.12) 36.5 (14.85) 46.0 (1.41) 52.3 (18.93)</span></span>
-<span><span class="co"># 3 AGE     Median                    32.5        36.5         46.0        44.0        </span></span>
-<span><span class="co"># 4 AGE     Min-Max                   31.0-34.0   26.0-47.0    45.0-47.0   39.0-74.0   </span></span>
-<span><span class="co"># 5 SEX     F                         NA ( NA%)   1 ( 50%)     2 (100%)    NA ( NA%)   </span></span>
-<span><span class="co"># 6 SEX     M                         2 (100%)    1 ( 50%)     NA ( NA%)   3 (100%)    </span></span>
-<span><span class="co"># 7 RACE    BLACK OR AFRICAN AMERICAN NA ( NA%)   NA ( NA%)    1 ( 50%)    NA ( NA%)   </span></span>
-<span><span class="co"># 8 RACE    WHITE                     2 (100%)    2 (100%)     1 ( 50%)    3 (100%)  </span></span>
-<span></span>
-<span></span>
-<span><span class="co"># Extract ARDS</span></span>
-<span><span class="co"># - Remove by-variables to improve readability</span></span>
-<span><span class="va">ards</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ards.html">get_ards</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"by"</span><span class="op">)</span><span class="op">)</span></span>
-<span>                             </span>
-<span><span class="co"># Uncomment to view ARDS                             </span></span>
-<span><span class="co"># View(ards)</span></span></code></pre></div>
-<p>Below is the ARDS dataset created by the above code sample:
-<img src="../man/images/ards1.png"></p>
+<img src="../man/images/ards2.png" alt="ARDS dataset image"></p>
 </div>
 <div class="section level2">
 <h2 id="restoring-an-ards-dataset">Restoring an ARDS Dataset<a class="anchor" aria-label="anchor" href="#restoring-an-ards-dataset"></a>
@@ -351,38 +179,27 @@ data frame for each analysis variable. The columns for each data frame
 may be different depending on which statistics were requested.</p>
 <p>Let’s pick up from the last example, and just restore the result from
 <code><a href="../reference/get_ards.html">get_ards()</a></code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Reduce columns for readability</span></span>
-<span><span class="va">ards_reduced</span> <span class="op">&lt;-</span> <span class="va">ards</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trtvar"</span>, <span class="st">"trtval"</span>, <span class="st">"anal_var"</span>, <span class="st">"anal_val"</span>, </span>
-<span>                          <span class="st">"statname"</span>, <span class="st">"statval"</span>, <span class="st">"statdesc"</span><span class="op">)</span><span class="op">]</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Restore to wide format</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/restore_ards.html">restore_ards</a></span><span class="op">(</span><span class="va">ards</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Restore ARDS </span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/restore_ards.html">restore_ards</a></span><span class="op">(</span><span class="va">ards_reduced</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View restored data</span></span>
+<span><span class="co"># View results</span></span>
 <span><span class="va">res</span></span>
-<span><span class="co"># $AGE</span></span>
-<span><span class="co">#   studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var anal_val n     mean       std median min max</span></span>
-<span><span class="co"># 1     ABC        1      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA      AGE     &lt;NA&gt; 2 32.50000  2.121320   32.5  31  34</span></span>
-<span><span class="co"># 2     ABC        2      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      AGE     &lt;NA&gt; 2 36.50000 14.849242   36.5  26  47</span></span>
-<span><span class="co"># 3     ABC        3      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA      AGE     &lt;NA&gt; 2 46.00000  1.414214   46.0  45  47</span></span>
-<span><span class="co"># 4     ABC        4      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA      AGE     &lt;NA&gt; 3 52.33333 18.929694   44.0  39  74</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># $SEX</span></span>
-<span><span class="co">#    studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var anal_val cnt pct</span></span>
-<span><span class="co"># 25     ABC       25      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      SEX        F   1  50</span></span>
-<span><span class="co"># 26     ABC       26      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA      SEX        F   2 100</span></span>
-<span><span class="co"># 27     ABC       27      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA      SEX        M   2 100</span></span>
-<span><span class="co"># 28     ABC       28      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA      SEX        M   1  50</span></span>
-<span><span class="co"># 29     ABC       29      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA      SEX        M   3 100</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># $RACE</span></span>
-<span><span class="co">#    studyid resultid tableid adsns        population      time        where trtvar trtval paramcd anal_var                  anal_val cnt pct</span></span>
-<span><span class="co"># 35     ABC       35      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA     RACE BLACK OR AFRICAN AMERICAN   1  50</span></span>
-<span><span class="co"># 36     ABC       36      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM A      NA     RACE                     WHITE   2 100</span></span>
-<span><span class="co"># 37     ABC       37      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM B      NA     RACE                     WHITE   2 100</span></span>
-<span><span class="co"># 38     ABC       38      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM C      NA     RACE                     WHITE   1  50</span></span>
-<span><span class="co"># 39     ABC       39      01  adsl safety population SCREENING saffl = TRUE    ARM  ARM D      NA     RACE                     WHITE   3 100</span></span></code></pre></div>
+<span><span class="co"># $mpg</span></span>
+<span><span class="co">#   cyl anal_var  n     mean      std  min  max</span></span>
+<span><span class="co"># 1   4      mpg 11 26.66364 4.509828 21.4 33.9</span></span>
+<span><span class="co"># 2   6      mpg  7 19.74286 1.453567 17.8 21.4</span></span>
+<span><span class="co"># 3   8      mpg 14 15.10000 2.560048 10.4 19.2</span></span></code></pre></div>
+<p>Notice that the analysis data has been restored, and statistics have
+been put back into their own columns. The data is now ready for
+reporting.</p>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
+<p>For further demonstrations of the <strong>ards</strong> package in
+action, see the following:</p>
+<p><a href="ards-example1.html">Example 1: ARDS in Parallel</a><br><a href="ards-example2.html">Example 2: ARDS in Serial</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
