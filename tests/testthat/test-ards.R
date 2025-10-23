@@ -583,16 +583,16 @@ test_that("ards12: restore_ards() anal_var parameter works as expected.", {
   init_ards(studyid = "abc",
             tableid = "01", adsns = c("adsl", "advs"),
             population = "safety population",
-            time = "SCREENING", where = "saffl = TRUE")
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
   
   
-  df1 <- data.frame("ACNT" = c(1, 2, 3))
+  df1 <- data.frame("ACNT" = c(1, 2, 3), label = "Group1")
   
   
   ards1 <- add_ards(df1, statvars = "ACNT", byvars = "label",
                     anal_var = "cyl")
   
-  df2 <- data.frame("ACNT" = c(4, 5, 6))
+  df2 <- data.frame("ACNT" = c(4, 5, 6), label = "Group2")
   
   ards2 <- add_ards(df2, statvars = "ACNT", byvars = "label",
                     anal_var = "cyl")
@@ -631,3 +631,81 @@ test_that("ards12: restore_ards() anal_var parameter works as expected.", {
   expect_equal("anal_var" %in% names(r1), FALSE)
   
 })
+
+
+test_that("ards13: restore_ards() with multiple by vars.", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, 3), label1 = "Group1", 
+                    label2 = c("A", "A", "B"))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = c("label1", "label2"),
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6), label1 = "Group2", 
+                    label2 = c("B", "A", "B"))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = c("label1", "label2"),
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 4)
+  expect_equal("anal_var" %in% names(r1), TRUE)
+
+  
+})
+
+test_that("ards14: NA values retained through get_ards() and restore_ards() .", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, NA, 3))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT",
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", 
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  expect_equal(is.null(ardsf), FALSE)
+  expect_equal(nrow(ardsf), 7)
+
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 7)
+  expect_equal(ncol(r1), 2)
+  
+  
+})
+
+
