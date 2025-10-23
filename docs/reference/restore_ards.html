@@ -48,7 +48,7 @@ The wide data can then be used for reporting.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">restore_ards</span><span class="op">(</span><span class="va">data</span>, init_vars <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">restore_ards</span><span class="op">(</span><span class="va">data</span>, init_vars <span class="op">=</span> <span class="cn">FALSE</span>, anal_var <span class="op">=</span> <span class="st">"anal_var"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +69,13 @@ the restored data frames.  Default is FALSE. The initialization variables
 include "studyid", "tableid", "adsns", "population", "time", and "where".
 To keep these variables on the restored data frames, set <code>init_vars</code>
 to TRUE.</p></dd>
+
+
+<dt id="arg-anal-var">anal_var<a class="anchor" aria-label="anchor" href="#arg-anal-var"></a></dt>
+<dd><p>The name to use for the analysis variable column. Default
+is "anal_var". If you need a different name for this column, pass the name
+as a quoted string here.  To eliminate the column entirely, pass a NULL
+on this parameter.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,9 +98,9 @@ function returns a list of data frames, one for each analysis variable.</p>
 <p>For each data frame, the statistics will each be in a separate column,
 named according to the original statistic variable name.  The label of the
 statistics columns will be the statistic description.</p>
-<p>All other columns will be populated according to the values contained in the
-ARDS dataset. These values can be useful for tracing back the source of the
-statistical values.</p>
+<p>By default, the columns populated by <code><a href="init_ards.html">init_ards</a></code> will not be
+returned. These columns can be returned by setting the "init_vars" parameter
+to TRUE.</p>
 <p>Once the ARDS data is restored and the statistics are back in separate
 columns, it will be easy to create a report, figure, or other output.</p>
     </div>
@@ -160,24 +167,16 @@ columns, it will be easy to create a report, figure, or other output.</p>
 <span></span>
 <span><span class="co"># View column names on Petal.Length</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># [1] "studyid"    "tableid"    "adsns"      "population"</span></span>
-<span><span class="co"># [5] "time"       "where"      "byvar1"     "byvar2"    </span></span>
-<span><span class="co"># [9] "byvar3"     "byvar4"     "byvar5"     "byvar6"    </span></span>
-<span><span class="co"># [13] "byvar7"     "byvar8"     "byvar9"     "byval1"    </span></span>
-<span><span class="co"># [17] "byval2"     "byval3"     "byval4"     "byval5"    </span></span>
-<span><span class="co"># [21] "byval6"     "byval7"     "byval8"     "byval9"    </span></span>
-<span><span class="co"># [25] "trtvar"     "trtval"     "paramcd"    "anal_var"  </span></span>
-<span><span class="co"># [29] "anal_val"   "n"          "mean"       "std"       </span></span>
-<span><span class="co"># [33] "min"        "max" </span></span>
+<span><span class="co"># [1] "Species"  "anal_var" "n"        "mean"     "std"      "min"      "max"    </span></span>
 <span></span>
 <span><span class="co"># View stat data on Petal.Length</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r1</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trtvar"</span>, <span class="st">"trtval"</span>, <span class="st">"anal_var"</span>, <span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"std"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#    trtvar     trtval     anal_var  n  mean       std min max</span></span>
-<span><span class="co"># 1 Species     setosa Petal.Length 50 1.462 0.1736640 1.0 1.9</span></span>
-<span><span class="co"># 2 Species versicolor Petal.Length 50 4.260 0.4699110 3.0 5.1</span></span>
-<span><span class="co"># 3 Species  virginica Petal.Length 50 5.552 0.5518947 4.5 6.9</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span></span>
+<span><span class="co">#      Species     anal_var  n  mean       std min max</span></span>
+<span><span class="co"># 1     setosa Petal.Length 50 1.462 0.1736640 1.0 1.9</span></span>
+<span><span class="co"># 2 versicolor Petal.Length 50 4.260 0.4699110 3.0 5.1</span></span>
+<span><span class="co"># 3  virginica Petal.Length 50 5.552 0.5518947 4.5 6.9</span></span>
 <span></span>
-<span><span class="co"># Uncomment to view restored data</span></span>
+<span><span class="co"># Uncomment to view restored datasets</span></span>
 <span><span class="co"># View(res$Petal.Length)</span></span>
 <span><span class="co"># View(res$Petal.Width)</span></span>
 <span></span></code></pre></div>

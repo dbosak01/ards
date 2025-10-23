@@ -708,4 +708,72 @@ test_that("ards14: NA values retained through get_ards() and restore_ards() .", 
   
 })
 
+test_that("ards15: restore_ards() works as expected with factors.", {
+  
+  
+  df <- read.table(header = TRUE, text = '
+    var    val label         CNT DENOM   PCT                TRT
+    "cyl"  8   "8 Cylinder" 10   19     0.5263157894736842 A
+    "cyl"  6   "6 Cylinder" 4    19     0.2105263157894737 A
+    "cyl"  4   "4 Cylinder" 5    19     0.2631578947368421 A
+    "cyl"  8   "8 Cylinder" 4    13     0.3076923076923077 B
+    "cyl"  6   "6 Cylinder" 3    13     0.2307692307692308 B
+    "cyl"  4   "4 Cylinder" 6    13     0.4615384615384615 B')
+  
+  
+  df$label <- factor(df$label, c("4 Cylinder", "6 Cylinder", "8 Cylinder"))
+  df$TRT <- factor(df$TRT, c("A", "B"))
+  
+  
+  init_ards(reset = TRUE)
+  
+  
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), byvars = "label",
+           anal_var = "cyl", anal_val = "val", trtvar = "TRT")
+  
+  res <- get_ards()
+  
+  res
+  
+  # Initially should be character
+  expect_equal(class(res$trtval), "character")
+  
+  res1 <- restore_ards(res)
+  
+  r1 <- res1$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(class(r1$TRT), "factor")
+  expect_equal(class(r1$label), "factor")
+  
+  
+  # Remove one of the factor variables
+  res$trtvar <- NULL
+  res$trtval <- NULL
+  
+  # Should get no error
+  res2 <- restore_ards(res)
+  
+  r2 <- res2$cyl
+  
+  expect_equal(is.null(r2), FALSE)
+  expect_equal("TRT" %in% names(r2), FALSE)
+  expect_equal(class(r2$label), "factor")
+  
+  
+  # Remove all factors
+  attr(res, "factors") <- NULL
+  
+  # Should get no error
+  res3 <- restore_ards(res)
+  
+  r3 <- res3$cyl
+  
+  expect_equal(is.null(r3), FALSE)
+  expect_equal("TRT" %in% names(r3), FALSE)
+  expect_equal(class(r3$label), "character")
+  
+  
+})
+
 

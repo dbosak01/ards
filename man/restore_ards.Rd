@@ -50,9 +50,9 @@ For each data frame, the statistics will each be in a separate column,
 named according to the original statistic variable name.  The label of the 
 statistics columns will be the statistic description.
 
-All other columns will be populated according to the values contained in the 
-ARDS dataset. These values can be useful for tracing back the source of the
-statistical values.  
+By default, the columns populated by \code{\link{init_ards}} will not be 
+returned. These columns can be returned by setting the "init_vars" parameter
+to TRUE. 
 
 Once the ARDS data is restored and the statistics are back in separate
 columns, it will be easy to create a report, figure, or other output.

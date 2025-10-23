@@ -1,6 +1,12 @@
 # ards 0.1.3
 
 * Added `restore_ards()` function to convert back to wide format.
+* Removed any factors during `add_ards()` to avoid problems stacking 
+data from different analysis variables.
+* Added "factors" attribute to ARDS dataset to capture which columns
+were factors when added.  This information will be used by `restore_ards()`
+to re-apply the factors on the transposed data.
+
 
 # ards 0.1.2
 

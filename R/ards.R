@@ -156,6 +156,7 @@ init_ards <- function(studyid = NA,
   if (reset) {
     # Assign empty template to ards
     ardsenv$ards <- ardsenv$template[0, ]
+    attr(ardsenv$ards, "factors") <- list()
   }
 
   return(ardsenv$template)
@@ -254,7 +255,26 @@ add_ards <- function(data, statvars, statdesc = NULL,
     stop("ARDS dataset is not initialized.") 
   }
 
+  # Get column names
   nms <- names(data)
+  
+  # Get factor list
+  fctrs <- attr(ardsenv$ards, "factors")
+  if (is.null(fctrs)) {
+    fctrs <- list() 
+  }
+    
+  # Collect factor info
+  for (nm in nms) {
+    if (is.factor(data[[nm]])) {
+      # Save factor levels in factors list
+      fctrs[[nm]] <- list(levels = levels(data[[nm]]))
+      
+      # Cast factor to character
+      # to avoid factor conflicts during rbind()
+      data[[nm]] <- as.character(data[[nm]])
+    }
+  }
 
   for (i in seq_len(length(statvars))) {
 
@@ -349,8 +369,6 @@ add_ards <- function(data, statvars, statdesc = NULL,
       }
     }
 
-
-
     # Convert to data frame and recycle template values.
     ret <- data.frame(ret)
 
@@ -358,6 +376,9 @@ add_ards <- function(data, statvars, statdesc = NULL,
     ardsenv$ards <- rbind(ardsenv$ards, ret)
 
   }
+
+  # Assign factor info to ARDS
+  attr(ardsenv$ards, "factors") <- fctrs
 
   return(data)
 
@@ -443,9 +464,9 @@ get_ards <- function() {
 #' named according to the original statistic variable name.  The label of the 
 #' statistics columns will be the statistic description.
 #' 
-#' All other columns will be populated according to the values contained in the 
-#' ARDS dataset. These values can be useful for tracing back the source of the
-#' statistical values.  
+#' By default, the columns populated by \code{\link{init_ards}} will not be 
+#' returned. These columns can be returned by setting the "init_vars" parameter
+#' to TRUE. 
 #' 
 #' Once the ARDS data is restored and the statistics are back in separate
 #' columns, it will be easy to create a report, figure, or other output.
@@ -691,6 +712,19 @@ restore_ards <- function(data, init_vars = FALSE, anal_var = "anal_var") {
     
     # Clear line numbers
     rownames(rdat) <- NULL
+    
+    # Assign factors
+    fctrs <- attr(data, "factors")
+    if (!is.null(fctrs)) {
+      fnms <- names(fctrs)
+      dnms <- names(rdat)
+      for (nm in fnms) {
+        if (nm %in% dnms) {
+          lvls <- fctrs[[nm]]$levels
+          rdat[[nm]] <- factor(rdat[[nm]], lvls)  
+        }
+      }
+    }
     
     # Add to return list
     ret[[anl]] <- rdat
