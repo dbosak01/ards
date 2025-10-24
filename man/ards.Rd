@@ -34,6 +34,7 @@ structure is recommended by CDISC.
 Useful links:
 \itemize{
   \item \url{https://ards.r-sassy.org}
+  \item \url{https://github.com/dbosak01/ards}
   \item Report bugs at \url{https://github.com/dbosak01/ards/issues}
 }
 

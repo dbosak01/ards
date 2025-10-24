@@ -462,7 +462,8 @@ get_ards <- function() {
 #' 
 #' For each data frame, the statistics will each be in a separate column, 
 #' named according to the original statistic variable name.  The label of the 
-#' statistics columns will be the statistic description.
+#' statistics columns will be any value passed to the statistic description
+#' ("statdesc") for that analysis variable.
 #' 
 #' By default, the columns populated by \code{\link{init_ards}} will not be 
 #' returned. These columns can be returned by setting the "init_vars" parameter
@@ -474,17 +475,18 @@ get_ards <- function() {
 #' @param data The input dataset to restore.  The input dataset should correspond
 #' to the CDISC ARDS structure, such as that created by \code{get_ards}. However,
 #' not all variables are required.  The only required variables are "anal_var", 
-#' "statname", and "statval".  All other variables will be process if available,
+#' "statname", and "statval".  All other variables will be processed if available,
 #' and ignored otherwise.
 #' @param init_vars Whether or not to keep the initialization variables on
 #' the restored data frames.  Default is FALSE. The initialization variables
 #' include "studyid", "tableid", "adsns", "population", "time", and "where".
 #' To keep these variables on the restored data frames, set \code{init_vars} 
 #' to TRUE.
-#' @param anal_var The name to use for the analysis variable column. Default
+#' @param anal_var The name to use for the analysis variable column. This column 
+#' is retained to positively identify the data frame. The default name is
 #' is "anal_var". If you need a different name for this column, pass the name
-#' as a quoted string here.  To eliminate the column entirely, pass a NULL
-#' on this parameter.
+#' as a quoted string.  To eliminate the column entirely, pass a NULL value
+#' to this parameter.
 #' @return A list of data frames, transposed back into wide format.  The 
 #' list will have one or more items, distinguished by the analysis variable.
 #' The list item name will correspond to the name of the analysis variable. 

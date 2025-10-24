@@ -15,7 +15,7 @@ Description: Contains functions to help create an Analysis Results Dataset.
     to capture analysis in a common tabular data structure.
 License: CC0
 Encoding: UTF-8
-URL: https://ards.r-sassy.org
+URL: https://ards.r-sassy.org, https://github.com/dbosak01/ards
 BugReports: https://github.com/dbosak01/ards/issues
 Depends: R (>= 4.1)
 Suggests: 

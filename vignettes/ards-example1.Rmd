@@ -44,8 +44,8 @@ analysis data and transformed into the ARDS structure.
 middle of a data pipeline, and will not interfere with your analysis.
 * The `add_ards()` function is called immediately after the calculations, before 
 any formatting or transformations.  The function is called at this point so that
-the ARDS will contains the original numeric values with full precision. 
-* When the analysis is complete, the `get_ards()` is called to retrieve the 
+the ARDS will contain the original numeric values with full precision. 
+* When the analysis is complete, the `get_ards()` function is called to retrieve the 
 ARDS dataset.  The ARDS dataset is a standard R data frame that can be saved,
 combined with other analysis results, or passed to another program for additional
 processing.
@@ -86,7 +86,7 @@ init_ards(studyid = "ABC",
 # Perform analysis on AGE variable
 agedf <- adsl |>
   select(AGE, ARM) |>
-  group_by(ARM, .drop = FALSE) |>
+  group_by(ARM, .drop = FALSE) |>  # Ensures zero counts in ARDS
   summarize(n = n(),
             mean = mean(AGE),
             std = sd(AGE),
@@ -130,7 +130,7 @@ trt_pop
 # Perform analysis on SEX variable
 sexdf <- adsl |>
   mutate(denom = trt_pop[paste0(adsl$ARM)]) |>
-  group_by(SEX, ARM, denom, .drop = FALSE) |>
+  group_by(SEX, ARM, denom, .drop = FALSE) |>  # Help with zero counts
   summarize(cnt = n()) |>
   transmute(SEX, ARM, cnt, analvar = "SEX", label = SEX,  
             pct =  if_else(is.na(denom), 0, cnt / denom * 100)) |>
@@ -156,7 +156,7 @@ sexdf
 # Perform analysis on RACE
 racedf <- adsl |>
   mutate(denom = trt_pop[paste0(adsl$ARM)]) |>
-  group_by(RACE, ARM, denom, .drop = FALSE) |>
+  group_by(RACE, ARM, denom, .drop = FALSE) |>  # Zero counts
   summarize(cnt = n()) |>
   transmute(RACE, ARM, cnt, analvar = "RACE", label = RACE,  
             pct =  if_else(is.na(denom), 0, cnt / denom * 100)) |>

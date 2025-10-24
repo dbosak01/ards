@@ -59,7 +59,7 @@ The wide data can then be used for reporting.</p>
 <dd><p>The input dataset to restore.  The input dataset should correspond
 to the CDISC ARDS structure, such as that created by <code>get_ards</code>. However,
 not all variables are required.  The only required variables are "anal_var",
-"statname", and "statval".  All other variables will be process if available,
+"statname", and "statval".  All other variables will be processed if available,
 and ignored otherwise.</p></dd>
 
 
@@ -72,10 +72,11 @@ to TRUE.</p></dd>
 
 
 <dt id="arg-anal-var">anal_var<a class="anchor" aria-label="anchor" href="#arg-anal-var"></a></dt>
-<dd><p>The name to use for the analysis variable column. Default
+<dd><p>The name to use for the analysis variable column. This column
+is retained to positively identify the data frame. The default name is
 is "anal_var". If you need a different name for this column, pass the name
-as a quoted string here.  To eliminate the column entirely, pass a NULL
-on this parameter.</p></dd>
+as a quoted string.  To eliminate the column entirely, pass a NULL value
+to this parameter.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -97,7 +98,8 @@ numbers of colums and different column names.  Therefore, the <code>restore_ards
 function returns a list of data frames, one for each analysis variable.</p>
 <p>For each data frame, the statistics will each be in a separate column,
 named according to the original statistic variable name.  The label of the
-statistics columns will be the statistic description.</p>
+statistics columns will be any value passed to the statistic description
+("statdesc") for that analysis variable.</p>
 <p>By default, the columns populated by <code><a href="init_ards.html">init_ards</a></code> will not be
 returned. These columns can be returned by setting the "init_vars" parameter
 to TRUE.</p>

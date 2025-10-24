@@ -6,7 +6,8 @@ data from different analysis variables.
 * Added "factors" attribute to ARDS dataset to capture which columns
 were factors when added.  This information will be used by `restore_ards()`
 to re-apply the factors on the transposed data.
-
+* Added examples 1 and 2 for using **ards** package in parallel or serial.
+* Added quite a few new test cases.
 
 # ards 0.1.2
 

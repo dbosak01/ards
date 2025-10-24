@@ -14,7 +14,7 @@
 An Analysis Results Dataset (ARDS) is commonly used in the pharma-biotech industry
 to capture the results of an analysis in a tabular data structure.  The **ards**
 package helps create the ARDS.  **ards** functions can be called from inside 
-a report program or a data preparation program.  The functions use a 
+an analysis or reporting program.  The functions use a 
 "bucketing" approach, whereby data can be added to the ARDS in multiple 
 calls and from multiple intermediate data sets. 
 
