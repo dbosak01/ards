@@ -742,6 +742,7 @@ test_that("ards15: restore_ards() works as expected with factors.", {
   
   r1 <- res1$cyl
   
+  # Now they should be factors
   expect_equal(is.null(r1), FALSE)
   expect_equal(class(r1$TRT), "factor")
   expect_equal(class(r1$label), "factor")
